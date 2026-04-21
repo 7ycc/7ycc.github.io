@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的家乡 - 严秀琼</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#7c3aed',
+                        secondary: '#8b5cf6',
+                        accent: '#a78bfa',
+                        dark: '#1e1e1e',
+                        light: '#fafafa',
+                        gray: '#e5e7eb',
+                        muted: '#6b7280'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .transition-all-300 {
+                transition: all 0.3s ease;
+            }
+            .card-hover {
+                @apply transition-all duration-300 hover:shadow-md hover:-translate-y-1;
+            }
+            .soft-shadow {
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            }
+            .gradient-bg {
+                background: linear-gradient(135deg, #fafafa 0%, #f3f4f6 100%);
+            }
+            .image-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 1.5rem;
+            }
+            .food-card {
+                @apply bg-white rounded-2xl overflow-hidden soft-shadow card-hover;
+            }
+            .food-card img {
+                @apply w-full h-48 object-cover;
+            }
+            .food-card .content {
+                @apply p-6;
+            }
+        }
+    </style>
+</head>
+<body class="bg-light text-gray-800">
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-b border-gray-100 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-gray-800">严秀琼</a>
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html#about" class="text-muted hover:text-primary transition-all-300">关于我</a>
+                <a href="index.html#skills" class="text-muted hover:text-primary transition-all-300">技能</a>
+                <a href="index.html#interests" class="text-muted hover:text-primary transition-all-300">兴趣</a>
+                <a href="hometown.html" class="text-primary font-medium">我的家乡</a>
+                <a href="python-course.html" class="text-muted hover:text-primary transition-all-300">Python课程</a>
+                <a href="index.html#contact" class="text-muted hover:text-primary transition-all-300">联系我</a>
+            </div>
+            <button class="md:hidden text-gray-800">
+                <i class="fa fa-bars text-xl"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <section class="min-h-screen flex items-center justify-center pt-20">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-4xl md:text-5xl font-light mb-6 text-gray-800">我的家乡</h1>
+            <p class="text-lg md:text-xl text-muted mb-12 max-w-3xl mx-auto">
+                广东，一个充满活力与魅力的地方，这里有繁华的都市、美丽的自然风光、丰富的美食文化，还有热情好客的人民。
+            </p>
+            <div class="animate-bounce">
+                <i class="fa fa-angle-down text-3xl text-gray-400"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- 家乡简介 -->
+    <section class="py-24">
+        <div class="container mx-auto px-6">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-2xl font-medium mb-8 text-center text-gray-800">家乡简介</h2>
+                <div class="bg-white p-10 rounded-2xl soft-shadow">
+                    <p class="text-muted mb-6 leading-relaxed">
+                        广东，简称粤，位于中国南部沿海地区，是中国经济最发达的省份之一。这里不仅有广州、深圳这样的现代化大都市，还有许多历史文化名城和自然风光胜地。
+                    </p>
+                    <p class="text-muted mb-6 leading-relaxed">
+                        广东的历史悠久，文化底蕴深厚。从古代的南越国到近代的通商口岸，广东一直是中国与世界交流的重要窗口。这里的语言、饮食、建筑等都具有独特的岭南特色。
+                    </p>
+                    <p class="text-muted leading-relaxed">
+                        广东的自然景观丰富多彩，从丹霞山的红石地貌到海陵岛的碧海蓝天，从清远的漂流到肇庆的七星岩，每一处都展现着大自然的鬼斧神工。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 图片展示 -->
+    <section class="py-24 gradient-bg">
+        <div class="container mx-auto px-6">
+            <h2 class="text-2xl font-medium mb-12 text-center text-gray-800">家乡风光</h2>
+            <div class="max-w-6xl mx-auto image-grid">
+                <div class="rounded-2xl overflow-hidden soft-shadow">
+                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=guangzhou%20canton%20tower%20modern%20city%20skyline%20sunset%20beautiful&image_size=landscape_4_3" alt="广州塔" class="w-full h-64 object-cover">
+                </div>
+                <div class="rounded-2xl overflow-hidden soft-shadow">
+                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=shenzhen%20modern%20city%20skyline%20high%20tech%20district&image_size=landscape_4_3" alt="深圳城市风光" class="w-full h-64 object-cover">
+                </div>
+                <div class="rounded-2xl overflow-hidden soft-shadow">
+                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=丹霞山%20danxia%20mountain%20red%20rock%20landscape%20china&image_size=landscape_4_3" alt="丹霞山" class="w-full h-64 object-cover">
+                </div>
+                <div class="rounded-2xl overflow-hidden soft-shadow">
+                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=beach%20sea%20coastline%20guangdong%20china%20clear%20water&image_size=landscape_4_3" alt="广东海滩" class="w-full h-64 object-cover">
+                </div>
+                <div class="rounded-2xl overflow-hidden soft-shadow">
+                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=guangzhou%20traditional%20architecture%20old%20town%20canton&image_size=landscape_4_3" alt="广州老城区" class="w-full h-64 object-cover">
+                </div>
+                <div class="rounded-2xl overflow-hidden soft-shadow">
+                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=countryside%20village%20guangdong%20china%20green%20fields&image_size=landscape_4_3" alt="广东乡村" class="w-full h-64 object-cover">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 美食介绍 -->
+    <section class="py-24">
+        <div class="container mx-auto px-6">
+            <h2 class="text-2xl font-medium mb-12 text-center text-gray-800">家乡美食</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <!-- 粤菜 -->
+                <div class="food-card">
+                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cantonese%20cuisine%20dim%20sum%20traditional%20chinese%20food&image_size=landscape_4_3" alt="粤菜">
+                    <div class="content">
+                        <h3 class="text-lg font-medium mb-3 text-gray-800">粤菜</h3>
+                        <p class="text-muted text-sm">
+                            粤菜是中国八大菜系之一，以其清淡、鲜美、精致而闻名。代表菜品有烧鹅、白切鸡、清蒸鱼等。
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- 早茶 -->
+                <div class="food-card">
+                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=chinese%20dim%20sum%20morning%20tea%20small%20dishes&image_size=landscape_4_3" alt="早茶">
+                    <div class="content">
+                        <h3 class="text-lg font-medium mb-3 text-gray-800">早茶</h3>
+                        <p class="text-muted text-sm">
+                            早茶是广东人日常生活的重要组成部分，包括虾饺、烧卖、凤爪、流沙包等各种精致点心。
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- 潮汕牛肉火锅 -->
+                <div class="food-card">
+                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=chaozhou%20beef%20hot%20pot%20traditional%20chinese%20cuisine&image_size=landscape_4_3" alt="潮汕牛肉火锅">
+                    <div class="content">
+                        <h3 class="text-lg font-medium mb-3 text-gray-800">潮汕牛肉火锅</h3>
+                        <p class="text-muted text-sm">
+                            潮汕牛肉火锅以其鲜美的牛肉和独特的汤底而著名，讲究食材的新鲜和口感的层次。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 景点介绍 -->
+    <section class="py-24 gradient-bg">
+        <div class="container mx-auto px-6">
+            <h2 class="text-2xl font-medium mb-12 text-center text-gray-800">著名景点</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl mx-auto">
+                <!-- 广州塔 -->
+                <div class="bg-white p-8 rounded-2xl soft-shadow">
+                    <h3 class="text-lg font-medium mb-4 text-gray-800">广州塔</h3>
+                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=canton%20tower%20illuminated%20night%20view%20guangzhou&image_size=landscape_4_3" alt="广州塔" class="w-full h-48 object-cover rounded-xl mb-4">
+                    <p class="text-muted text-sm">
+                        广州塔，又称小蛮腰，是广州的地标建筑，高600米，是中国第一高塔。塔上有观景台、旋转餐厅等设施，可以俯瞰整个广州城。
+                    </p>
+                </div>
+                
+                <!-- 丹霞山 -->
+                <div class="bg-white p-8 rounded-2xl soft-shadow">
+                    <h3 class="text-lg font-medium mb-4 text-gray-800">丹霞山</h3>
+                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=danxia%20mountain%20scenic%20view%20red%20rock%20formations&image_size=landscape_4_3" alt="丹霞山" class="w-full h-48 object-cover rounded-xl mb-4">
+                    <p class="text-muted text-sm">
+                        丹霞山位于韶关市，是世界自然遗产，以其独特的丹霞地貌而闻名。这里的山峰呈现出鲜艳的红色，形态各异，风景壮观。
+                    </p>
+                </div>
+                
+                <!-- 开平碉楼 -->
+                <div class="bg-white p-8 rounded-2xl soft-shadow">
+                    <h3 class="text-lg font-medium mb-4 text-gray-800">开平碉楼</h3>
+                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=kaiping%20diaolou%20traditional%20fortified%20towers%20china&image_size=landscape_4_3" alt="开平碉楼" class="w-full h-48 object-cover rounded-xl mb-4">
+                    <p class="text-muted text-sm">
+                        开平碉楼是中国传统建筑与西方建筑风格相结合的产物，是华侨文化的重要载体。这些碉楼不仅具有防御功能，也是精美的艺术品。
+                    </p>
+                </div>
+                
+                <!-- 海陵岛 -->
+                <div class="bg-white p-8 rounded-2xl soft-shadow">
+                    <h3 class="text-lg font-medium mb-4 text-gray-800">海陵岛</h3>
+                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=hailing%20island%20beach%20clear%20blue%20water%20white%20sand&image_size=landscape_4_3" alt="海陵岛" class="w-full h-48 object-cover rounded-xl mb-4">
+                    <p class="text-muted text-sm">
+                        海陵岛位于阳江市，是广东省第四大岛，以其优美的海滩和清澈的海水而著名。这里是度假、休闲的理想去处。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-white border-t border-gray-100 py-10">
+        <div class="container mx-auto px-6 text-center">
+            <div class="flex justify-center space-x-8 mb-6">
+                <a href="#" class="text-muted hover:text-primary transition-all-300">
+                    <i class="fa fa-weixin text-2xl"></i>
+                </a>
+                <a href="#" class="text-muted hover:text-primary transition-all-300">
+                    <i class="fa fa-weibo text-2xl"></i>
+                </a>
+                <a href="#" class="text-muted hover:text-primary transition-all-300">
+                    <i class="fa fa-github text-2xl"></i>
+                </a>
+            </div>
+            <p class="text-muted text-sm">© 2026 严秀琼. 保留所有权利.</p>
+        </div>
+    </footer>
+
+    <script>
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-md');
+            } else {
+                nav.classList.remove('shadow-md');
+            }
+        });
+    </script>
+</body>
+</html>
