@@ -6,14 +6,8 @@
     <title>Python基础课程 - 严秀琼</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <!-- CodeMirror 和 Pyodide 库 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/matchbrackets.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/closebrackets.min.js"></script>
-    <script src="https://pyodide-cdn2.iodide.io/v0.22.1/full/pyodide.js"></script>
+    <!-- Pyodide 库 -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -55,83 +49,81 @@
             .glow-effect {
                 box-shadow: 0 0 20px rgba(0, 212, 255, 0.1);
             }
-            .code-editor {
-                border-radius: 0.5rem;
-                overflow: hidden;
-            }
-            .CodeMirror {
-                height: 200px;
-                font-size: 14px;
-                line-height: 1.5;
-            }
-            .code-output {
-                background-color: rgba(0, 0, 0, 0.3);
-                border-top: 1px solid rgba(0, 212, 255, 0.2);
-                padding: 1rem;
-                font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-                font-size: 14px;
-                white-space: pre-wrap;
-                word-break: break-all;
-                min-height: 100px;
-            }
-            .code-controls {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 0.5rem 1rem;
-                background-color: rgba(0, 0, 0, 0.3);
-                border-bottom: 1px solid rgba(0, 212, 255, 0.2);
-            }
-            .code-btn {
-                padding: 0.25rem 0.75rem;
-                border-radius: 0.25rem;
-                font-size: 14px;
-                font-weight: 500;
-                transition: all 0.2s ease;
-            }
-            .code-btn:hover {
-                opacity: 0.8;
-            }
-            .code-btn-run {
-                background-color: #00d4ff;
-                color: #0f172a;
-            }
-            .code-btn-clear {
-                background-color: transparent;
-                color: #00d4ff;
-                border: 1px solid #00d4ff;
-            }
-            .code-floating {
-                position: fixed;
-                bottom: 2rem;
-                right: 2rem;
-                width: 400px;
-                max-width: 90vw;
-                z-index: 1000;
-                box-shadow: 0 10px 25px rgba(0, 212, 255, 0.2);
-                border-radius: 0.75rem;
-                overflow: hidden;
-                transition: all 0.3s ease;
-            }
-            .code-floating.collapsed {
-                height: 40px;
-            }
-            .code-floating.collapsed .code-floating-content {
-                display: none;
-            }
-            .code-floating-header {
-                background-color: rgba(30, 41, 59, 0.95);
-                padding: 0.75rem 1rem;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                cursor: pointer;
-                border-bottom: 1px solid rgba(0, 212, 255, 0.2);
-            }
-            .code-floating-content {
-                background-color: rgba(15, 23, 42, 0.95);
-                padding: 0;
-            }
+        }
+    </style>
+    <style>
+        #code-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            width: 500px;
+            max-height: 70vh;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.3);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        #code-panel.collapsed {
+            width: 60px;
+            max-height: 60px;
+            border-radius: 50%;
+        }
+        #code-panel.collapsed .panel-content {
+            display: none;
+        }
+        #code-panel.collapsed #toggle-btn {
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #code-editor {
+            width: 100%;
+            height: 200px;
+            background: #1e293b;
+            color: #f1f5f9;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+        }
+        #code-output {
+            width: 100%;
+            height: 150px;
+            background: #0f172a;
+            color: #4ade80;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .code-example {
+            background: #1e293b;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .code-example:hover {
+            border-color: rgba(0, 212, 255, 0.6);
+            background: rgba(30, 41, 59, 0.9);
+        }
+        .code-example pre {
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #f1f5f9;
+            white-space: pre-wrap;
         }
     </style>
 </head>
@@ -151,6 +143,52 @@
             </button>
         </div>
     </nav>
+
+    <!-- 代码编辑器面板 -->
+    <div id="code-panel" class="tech-card collapsed">
+        <button id="toggle-btn" class="w-full bg-primary text-dark p-3 font-semibold hover:bg-primary/90 transition-all-300 flex items-center justify-between">
+            <span class="panel-content">Python代码编辑器</span>
+            <i class="fa fa-code"></i>
+        </button>
+        <div class="panel-content p-4">
+            <div class="mb-4">
+                <label class="block text-sm mb-2 text-light/80">代码输入</label>
+                <textarea id="code-editor" placeholder="在这里输入Python代码...">print("Hello, Python!")
+
+# 示例：变量和数据类型
+x = 10
+y = 3.14
+name = "严秀琼"
+is_student = True
+
+print(f"x = {x}, 类型: {type(x)}")
+print(f"y = {y}, 类型: {type(y)}")
+print(f"name = {name}, 类型: {type(name)}")
+print(f"is_student = {is_student}, 类型: {type(is_student)}")
+
+# 示例：列表操作
+numbers = [1, 2, 3, 4, 5]
+numbers_squared = [n**2 for n in numbers]
+print(f"\n列表: {numbers}")
+print(f"平方: {numbers_squared}")</textarea>
+            </div>
+            <div class="flex gap-3 mb-4">
+                <button id="run-btn" class="bg-primary text-dark px-4 py-2 rounded-lg font-semibold hover:bg-primary/90 transition-all-300 flex items-center gap-2">
+                    <i class="fa fa-play"></i> 运行代码
+                </button>
+                <button id="reset-btn" class="bg-secondary text-light px-4 py-2 rounded-lg font-semibold hover:bg-secondary/80 transition-all-300 flex items-center gap-2">
+                    <i class="fa fa-refresh"></i> 重置
+                </button>
+                <button id="clear-btn" class="bg-darkgray text-light px-4 py-2 rounded-lg font-semibold hover:bg-darkgray/80 transition-all-300 flex items-center gap-2">
+                    <i class="fa fa-trash"></i> 清空
+                </button>
+            </div>
+            <div>
+                <label class="block text-sm mb-2 text-light/80">输出结果</label>
+                <div id="code-output">准备就绪，点击运行按钮开始！</div>
+            </div>
+        </div>
+    </div>
 
     <!-- 英雄区域 -->
     <section class="min-h-screen flex items-center justify-center tech-bg pt-20">
@@ -172,194 +210,375 @@
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold mb-12 text-center text-white">课程内容</h2>
             
-            <!-- 阶段一：环境搭建 -->
+            <!-- 阶段一：环境搭建与核心语法 -->
             <div class="mb-16">
-                <h3 class="text-2xl font-semibold mb-6 text-primary text-center">阶段一：环境搭建（1-2天）</h3>
-                <div class="tech-card p-6 rounded-2xl glow-effect">
-                    <ul class="space-y-4 text-light/80">
-                        <li class="flex items-start">
-                            <i class="fa fa-check-circle text-primary mt-1 mr-3"></i>
-                            <div>
-                                <span class="font-medium text-white">从官网安装 Python 3.12 或 3.13</span>
-                                <p class="text-sm text-light/60 mt-1">务必勾选"Add to PATH"选项</p>
-                            </div>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fa fa-check-circle text-primary mt-1 mr-3"></i>
-                            <div>
-                                <span class="font-medium text-white">安装编辑器</span>
-                                <p class="text-sm text-light/60 mt-1">强烈推荐 VS Code（安装Python插件）或 Jupyter Notebook</p>
-                            </div>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fa fa-check-circle text-primary mt-1 mr-3"></i>
-                            <div>
-                                <span class="font-medium text-white">创建虚拟环境</span>
-                                <p class="text-sm text-light/60 mt-1">这是工程化思维的起点，能避免依赖冲突</p>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            
-            <!-- 阶段二：核心语法 -->
-            <div class="mb-16">
-                <h3 class="text-2xl font-semibold mb-6 text-primary text-center">阶段二：核心语法（重点练习）</h3>
+                <h3 class="text-2xl font-semibold mb-6 text-primary text-center">阶段一：环境搭建与核心语法（1-2天）</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- 环境搭建 -->
                     <div class="tech-card p-6 rounded-2xl card-hover glow-effect">
                         <div class="bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mb-5">
-                            <i class="fa fa-code text-2xl text-primary"></i>
+                            <i class="fa fa-desktop text-2xl text-primary"></i>
                         </div>
-                        <h4 class="text-xl font-semibold mb-3 text-primary">变量与数据类型</h4>
+                        <h4 class="text-xl font-semibold mb-3 text-primary">环境搭建</h4>
                         <p class="text-light/70 mb-4 text-sm">
-                            掌握 int, float, str, bool 以及如何用 type() 查看类型。
+                            搭建Python开发环境，为后续学习做好准备。
                         </p>
+                        <ul class="space-y-2 text-sm text-light/80">
+                            <li class="flex items-center">
+                                <i class="fa fa-check-circle text-primary mr-2"></i>
+                                <span>从官网安装 Python 3.12 或 3.13</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fa fa-check-circle text-primary mr-2"></i>
+                                <span>配置环境变量（Add to PATH）</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fa fa-check-circle text-primary mr-2"></i>
+                                <span>安装VS Code或Jupyter Notebook</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fa fa-check-circle text-primary mr-2"></i>
+                                <span>创建虚拟环境</span>
+                            </li>
+                        </ul>
                     </div>
-                    
+
+                    <!-- 核心语法 -->
                     <div class="tech-card p-6 rounded-2xl card-hover glow-effect">
                         <div class="bg-secondary/20 w-16 h-16 rounded-full flex items-center justify-center mb-5">
-                            <i class="fa fa-database text-2xl text-secondary"></i>
+                            <i class="fa fa-code text-2xl text-secondary"></i>
                         </div>
-                        <h4 class="text-xl font-semibold mb-3 text-secondary">数据结构</h4>
+                        <h4 class="text-xl font-semibold mb-3 text-secondary">核心语法</h4>
                         <p class="text-light/70 mb-4 text-sm">
-                            必须精通列表（list）的索引、切片、增删改和推导式；掌握字典（dict）的键值对操作；了解元组（tuple）和集合（set）的特性。
+                            掌握Python的基本语法和核心概念。
                         </p>
-                    </div>
-                    
-                    <div class="tech-card p-6 rounded-2xl card-hover glow-effect">
-                        <div class="bg-accent/20 w-16 h-16 rounded-full flex items-center justify-center mb-5">
-                            <i class="fa fa-random text-2xl text-accent"></i>
-                        </div>
-                        <h4 class="text-xl font-semibold mb-3 text-accent">控制流</h4>
-                        <p class="text-light/70 mb-4 text-sm">
-                            熟练使用 if-elif-else 进行条件判断，以及 for 和 while 循环。
-                        </p>
-                    </div>
-                    
-                    <div class="tech-card p-6 rounded-2xl card-hover glow-effect">
-                        <div class="bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mb-5">
-                            <i class="fa fa-cogs text-2xl text-primary"></i>
-                        </div>
-                        <h4 class="text-xl font-semibold mb-3 text-primary">函数</h4>
-                        <p class="text-light/70 mb-4 text-sm">
-                            学会使用 def 定义函数，理解参数、返回值和作用域。
-                        </p>
-                    </div>
-                    
-                    <div class="tech-card p-6 rounded-2xl card-hover glow-effect md:col-span-2">
-                        <div class="bg-secondary/20 w-16 h-16 rounded-full flex items-center justify-center mb-5">
-                            <i class="fa fa-file-text text-2xl text-secondary"></i>
-                        </div>
-                        <h4 class="text-xl font-semibold mb-3 text-secondary">文件操作与异常处理</h4>
-                        <p class="text-light/70 mb-4 text-sm">
-                            掌握用 with open() 读写文本文件（如CSV），并用 try-except 处理错误，这是处理真实数据必备的技能。
-                        </p>
+                        <ul class="space-y-2 text-sm text-light/80">
+                            <li class="flex items-center">
+                                <i class="fa fa-check-circle text-secondary mr-2"></i>
+                                <span>变量与数据类型（int, float, str, bool）</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fa fa-check-circle text-secondary mr-2"></i>
+                                <span>数据结构（列表、字典、元组、集合）</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fa fa-check-circle text-secondary mr-2"></i>
+                                <span>控制流（if-elif-else, for, while）</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fa fa-check-circle text-secondary mr-2"></i>
+                                <span>函数定义与使用</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fa fa-check-circle text-secondary mr-2"></i>
+                                <span>文件操作与异常处理</span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
+                
+                <!-- 示例代码区域 -->
+                <div class="mt-12">
+                    <h4 class="text-xl font-semibold mb-6 text-primary text-center">点击代码示例即可在编辑器中运行</h4>
+                    
+                    <div class="code-example" onclick="loadCodeExample('variables')">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-primary font-semibold">📌 变量与数据类型</span>
+                            <i class="fa fa-pencil text-light/50"></i>
+                        </div>
+                        <pre># 变量与数据类型示例
+x = 10
+y = 3.14
+name = "严秀琼"
+is_student = True
+
+print(f"x = {x}, 类型: {type(x)}")
+print(f"y = {y}, 类型: {type(y)}")
+print(f"name = {name}, 类型: {type(name)}")
+print(f"is_student = {is_student}, 类型: {type(is_student)}")</pre>
+                    </div>
+                    
+                    <div class="code-example" onclick="loadCodeExample('lists')">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-secondary font-semibold">📌 列表操作</span>
+                            <i class="fa fa-pencil text-light/50"></i>
+                        </div>
+                        <pre># 列表操作示例
+numbers = [1, 2, 3, 4, 5]
+print(f"原始列表: {numbers}")
+
+# 索引和切片
+print(f"第一个元素: {numbers[0]}")
+print(f"前三个元素: {numbers[:3]}")
+
+# 列表推导式
+squared = [n**2 for n in numbers]
+print(f"平方列表: {squared}")
+
+# 增加元素
+numbers.append(6)
+print(f"添加后: {numbers}")
+
+# 列表操作
+print(f"长度: {len(numbers)}")
+print(f"总和: {sum(numbers)}")
+print(f"最大值: {max(numbers)}")</pre>
+                    </div>
+                    
+                    <div class="code-example" onclick="loadCodeExample('dictionaries')">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-accent font-semibold">📌 字典操作</span>
+                            <i class="fa fa-pencil text-light/50"></i>
+                        </div>
+                        <pre># 字典操作示例
+student = {
+    "name": "严秀琼",
+    "age": 20,
+    "major": "数据科学",
+    "grades": [90, 85, 95]
+}
+
+print(f"学生信息: {student}")
+print(f"姓名: {student['name']}")
+print(f"专业: {student['major']}")
+
+# 访问所有键和值
+print(f"\n键: {list(student.keys())}")
+print(f"值: {list(student.values())}")
+
+# 添加新键值对
+student['email'] = "student@example.com"
+print(f"\n添加邮箱后: {student}")
+
+# 遍历字典
+print("\n遍历字典:")
+for key, value in student.items():
+    print(f"{key}: {value}")</pre>
+                    </div>
+                    
+                    <div class="code-example" onclick="loadCodeExample('control_flow')">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-primary font-semibold">📌 控制流</span>
+                            <i class="fa fa-pencil text-light/50"></i>
+                        </div>
+                        <pre># 控制流示例
+score = 85
+
+# if-elif-else
+if score >= 90:
+    grade = "优秀"
+elif score >= 80:
+    grade = "良好"
+elif score >= 60:
+    grade = "及格"
+else:
+    grade = "不及格"
+
+print(f"分数: {score}, 等级: {grade}")
+
+# for循环
+print("\nfor循环示例:")
+for i in range(1, 6):
+    print(f"{i} * {i} = {i*i}")
+
+# while循环
+print("\nwhile循环示例:")
+count = 1
+while count <= 5:
+    print(f"计数: {count}")
+    count += 1</pre>
+                    </div>
+                    
+                    <div class="code-example" onclick="loadCodeExample('functions')">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-secondary font-semibold">📌 函数</span>
+                            <i class="fa fa-pencil text-light/50"></i>
+                        </div>
+                        <pre># 函数示例
+def greet(name, greeting="你好"):
+    return f"{greeting}, {name}!"
+
+# 调用函数
+message1 = greet("严秀琼")
+message2 = greet("Python", "欢迎")
+print(message1)
+print(message2)
+
+# 计算函数
+def calculate_area(width, height):
+    area = width * height
+    perimeter = 2 * (width + height)
+    return area, perimeter
+
+area, perimeter = calculate_area(5, 3)
+print(f"\n矩形面积: {area}")
+print(f"矩形周长: {perimeter}")
+
+# 可变参数
+def sum_all(*numbers):
+    return sum(numbers)
+
+print(f"\n求和: {sum_all(1, 2, 3, 4, 5)}")</pre>
+                    </div>
+                </div>
             </div>
-            
-            <!-- 阶段三：Pythonic进阶与数据分析入门 -->
+
+            <!-- 阶段二：Pythonic进阶与数据分析入门 -->
             <div class="mb-16">
-                <h3 class="text-2xl font-semibold mb-6 text-primary text-center">阶段三：Pythonic进阶与数据分析入门（2-3周）</h3>
+                <h3 class="text-2xl font-semibold mb-6 text-primary text-center">阶段二：Pythonic进阶与数据分析入门（2-3周）</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="tech-card p-6 rounded-2xl card-hover glow-effect">
-                        <div class="bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mb-5">
-                            <i class="fa fa-object-group text-2xl text-primary"></i>
-                        </div>
-                        <h4 class="text-xl font-semibold mb-3 text-primary">面向对象编程（OOP）</h4>
-                        <p class="text-light/70 mb-4 text-sm">
-                            理解类（class）、对象、__init__方法的基本概念即可，这对理解后续许多库的用法有帮助。
-                        </p>
-                    </div>
-                    
-                    <div class="tech-card p-6 rounded-2xl card-hover glow-effect">
-                        <div class="bg-secondary/20 w-16 h-16 rounded-full flex items-center justify-center mb-5">
-                            <i class="fa fa-book text-2xl text-secondary"></i>
-                        </div>
-                        <h4 class="text-xl font-semibold mb-3 text-secondary">常用标准库</h4>
-                        <p class="text-light/70 mb-4 text-sm">
-                            重点学习 os（文件路径操作）、json（处理JSON数据）、datetime（处理时间数据），这些在数据处理中非常常用。
-                        </p>
-                    </div>
-                    
+                    <!-- 进阶概念 -->
                     <div class="tech-card p-6 rounded-2xl card-hover glow-effect">
                         <div class="bg-accent/20 w-16 h-16 rounded-full flex items-center justify-center mb-5">
-                            <i class="fa fa-table text-2xl text-accent"></i>
+                            <i class="fa fa-object-group text-2xl text-accent"></i>
                         </div>
-                        <h4 class="text-xl font-semibold mb-3 text-accent">Pandas 和 NumPy</h4>
+                        <h4 class="text-xl font-semibold mb-3 text-accent">进阶概念</h4>
                         <p class="text-light/70 mb-4 text-sm">
-                            Pandas用于处理表格数据（类似Excel但更强大），NumPy提供高效的数组运算。
+                            提升代码质量，学习Python的高级特性。
                         </p>
+                        <ul class="space-y-2 text-sm text-light/80">
+                            <li class="flex items-center">
+                                <i class="fa fa-check-circle text-accent mr-2"></i>
+                                <span>面向对象编程（OOP）</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fa fa-check-circle text-accent mr-2"></i>
+                                <span>常用标准库（os, json, datetime）</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fa fa-check-circle text-accent mr-2"></i>
+                                <span>Pythonic编程风格</span>
+                            </li>
+                        </ul>
                     </div>
-                    
+
+                    <!-- 数据分析核心库 -->
                     <div class="tech-card p-6 rounded-2xl card-hover glow-effect">
                         <div class="bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mb-5">
                             <i class="fa fa-bar-chart text-2xl text-primary"></i>
                         </div>
-                        <h4 class="text-xl font-semibold mb-3 text-primary">数据可视化</h4>
+                        <h4 class="text-xl font-semibold mb-3 text-primary">数据分析核心库</h4>
                         <p class="text-light/70 mb-4 text-sm">
-                            初步了解 Matplotlib 或 Seaborn 进行基础的数据可视化。
+                            学习数据分析必备的Python库。
                         </p>
+                        <ul class="space-y-2 text-sm text-light/80">
+                            <li class="flex items-center">
+                                <i class="fa fa-check-circle text-primary mr-2"></i>
+                                <span>Pandas（数据处理）</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fa fa-check-circle text-primary mr-2"></i>
+                                <span>NumPy（数组运算）</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fa fa-check-circle text-primary mr-2"></i>
+                                <span>Matplotlib/Seaborn（数据可视化）</span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
-            
-            <!-- 阶段四：确定方向，实战深化 -->
+
+            <!-- 阶段三：确定方向，实战深化 -->
             <div class="mb-16">
-                <h3 class="text-2xl font-semibold mb-6 text-primary text-center">阶段四：确定方向，实战深化（3-6周）</h3>
+                <h3 class="text-2xl font-semibold mb-6 text-primary text-center">阶段三：确定方向，实战深化（3-6周）</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="tech-card p-6 rounded-2xl card-hover glow-effect">
-                        <div class="bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mb-5">
-                            <i class="fa fa-database text-2xl text-primary"></i>
-                        </div>
-                        <h4 class="text-xl font-semibold mb-3 text-primary">深耕数据分析栈</h4>
-                        <p class="text-light/70 mb-4 text-sm">
-                            系统学习 Pandas 的数据清洗、分组聚合、合并等高级操作；掌握 Matplotlib/Seaborn 绘制多种统计图表；学习使用 Jupyter Notebook 撰写完整的数据分析报告。
-                        </p>
-                    </div>
-                    
+                    <!-- 深耕数据分析栈 -->
                     <div class="tech-card p-6 rounded-2xl card-hover glow-effect">
                         <div class="bg-secondary/20 w-16 h-16 rounded-full flex items-center justify-center mb-5">
-                            <i class="fa fa-download text-2xl text-secondary"></i>
+                            <i class="fa fa-database text-2xl text-secondary"></i>
                         </div>
-                        <h4 class="text-xl font-semibold mb-3 text-secondary">数据获取</h4>
+                        <h4 class="text-xl font-semibold mb-3 text-secondary">深耕数据分析栈</h4>
                         <p class="text-light/70 mb-4 text-sm">
-                            学习 requests 库获取网络API数据，或 BeautifulSoup 进行简单的网页爬虫，用于数据采集。
+                            系统学习数据分析的高级技能。
                         </p>
+                        <ul class="space-y-2 text-sm text-light/80">
+                            <li class="flex items-center">
+                                <i class="fa fa-check-circle text-secondary mr-2"></i>
+                                <span>Pandas高级操作（数据清洗、聚合、合并）</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fa fa-check-circle text-secondary mr-2"></i>
+                                <span>Matplotlib/Seaborn高级可视化</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fa fa-check-circle text-secondary mr-2"></i>
+                                <span>Jupyter Notebook数据分析报告</span>
+                            </li>
+                        </ul>
                     </div>
-                    
-                    <div class="tech-card p-6 rounded-2xl card-hover glow-effect md:col-span-2">
+
+                    <!-- 拓展辅助技能 -->
+                    <div class="tech-card p-6 rounded-2xl card-hover glow-effect">
                         <div class="bg-accent/20 w-16 h-16 rounded-full flex items-center justify-center mb-5">
-                            <i class="fa fa-github text-2xl text-accent"></i>
+                            <i class="fa fa-cogs text-2xl text-accent"></i>
                         </div>
-                        <h4 class="text-xl font-semibold mb-3 text-accent">版本控制</h4>
+                        <h4 class="text-xl font-semibold mb-3 text-accent">拓展辅助技能</h4>
                         <p class="text-light/70 mb-4 text-sm">
-                            学习 Git 基础命令，将你的代码和项目托管到GitHub，这是现代协作的必备技能。
+                            学习数据获取和版本控制等辅助技能。
                         </p>
+                        <ul class="space-y-2 text-sm text-light/80">
+                            <li class="flex items-center">
+                                <i class="fa fa-check-circle text-accent mr-2"></i>
+                                <span>数据获取（requests, BeautifulSoup）</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fa fa-check-circle text-accent mr-2"></i>
+                                <span>Git基础与GitHub托管</span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
-            
-            <!-- 阶段五：持续精进与拥抱AI -->
+
+            <!-- 阶段四：持续精进与拥抱AI -->
             <div>
-                <h3 class="text-2xl font-semibold mb-6 text-primary text-center">阶段五：持续精进与拥抱AI（长期）</h3>
+                <h3 class="text-2xl font-semibold mb-6 text-primary text-center">阶段四：持续精进与拥抱AI（长期）</h3>
                 <div class="tech-card p-6 rounded-2xl glow-effect">
-                    <ul class="space-y-4 text-light/80">
-                        <li class="flex items-start">
-                            <i class="fa fa-check-circle text-primary mt-1 mr-3"></i>
-                            <div>
-                                <span class="font-medium text-white">拥抱AI辅助</span>
-                                <p class="text-sm text-light/60 mt-1">将AI编程助手（如DeepSeek、GitHub Copilot）融入你的学习工作流。让它帮你解释代码、生成示例、调试错误，从而极大提升学习效率。</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <div class="bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mb-5">
+                                <i class="fa fa-robot text-2xl text-primary"></i>
                             </div>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fa fa-check-circle text-primary mt-1 mr-3"></i>
-                            <div>
-                                <span class="font-medium text-white">关注前沿</span>
-                                <p class="text-sm text-light/60 mt-1">了解AI工程化、大模型应用（如用LangChain构建智能问答）等趋势，但前提是已扎实掌握数据分析核心技能。</p>
+                            <h4 class="text-xl font-semibold mb-3 text-primary">拥抱AI辅助</h4>
+                            <p class="text-light/70 mb-4 text-sm">
+                                将AI编程助手融入学习工作流，提升效率。
+                            </p>
+                            <ul class="space-y-2 text-sm text-light/80">
+                                <li class="flex items-center">
+                                    <i class="fa fa-check-circle text-primary mr-2"></i>
+                                    <span>AI编程助手（DeepSeek、GitHub Copilot）</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fa fa-check-circle text-primary mr-2"></i>
+                                    <span>AI辅助代码解释和调试</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <div class="bg-secondary/20 w-16 h-16 rounded-full flex items-center justify-center mb-5">
+                                <i class="fa fa-lightbulb-o text-2xl text-secondary"></i>
                             </div>
-                        </li>
-                    </ul>
+                            <h4 class="text-xl font-semibold mb-3 text-secondary">关注前沿</h4>
+                            <p class="text-light/70 mb-4 text-sm">
+                                了解AI工程化和大模型应用等趋势。
+                            </p>
+                            <ul class="space-y-2 text-sm text-light/80">
+                                <li class="flex items-center">
+                                    <i class="fa fa-check-circle text-secondary mr-2"></i>
+                                    <span>AI工程化</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fa fa-check-circle text-secondary mr-2"></i>
+                                    <span>大模型应用（LangChain）</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fa fa-check-circle text-secondary mr-2"></i>
+                                    <span>持续学习数据分析新工具</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -470,18 +689,18 @@
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold mb-12 text-center text-white">实践项目</h2>
             
-            <!-- 阶段项目 -->
+            <!-- 阶段一项目 -->
             <div class="mb-12">
-                <h3 class="text-2xl font-semibold mb-6 text-primary text-center">阶段项目</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <!-- 项目1 -->
+                <h3 class="text-xl font-semibold mb-6 text-primary text-center">阶段一项目</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- 猜数字游戏 -->
                     <div class="tech-card p-6 rounded-2xl card-hover glow-effect">
                         <div class="bg-primary/20 w-14 h-14 rounded-full flex items-center justify-center mb-5">
                             <i class="fa fa-gamepad text-2xl text-primary"></i>
                         </div>
-                        <h3 class="text-xl font-semibold mb-3 text-primary">猜数字游戏</h3>
+                        <h4 class="text-xl font-semibold mb-3 text-primary">猜数字游戏</h4>
                         <p class="text-light/70 mb-4 text-sm">
-                            实现一个猜数字游戏，系统随机生成一个数字，用户猜测并获得提示，直到猜中为止。
+                            实现一个猜数字游戏，锻炼基本的控制流和用户交互能力。
                         </p>
                         <ul class="space-y-2 text-sm text-light/80">
                             <li class="flex items-center">
@@ -499,97 +718,102 @@
                         </ul>
                     </div>
 
-                    <!-- 项目2 -->
+                    <!-- 学生成绩管理系统 -->
                     <div class="tech-card p-6 rounded-2xl card-hover glow-effect">
                         <div class="bg-secondary/20 w-14 h-14 rounded-full flex items-center justify-center mb-5">
                             <i class="fa fa-graduation-cap text-2xl text-secondary"></i>
                         </div>
-                        <h3 class="text-xl font-semibold mb-3 text-secondary">学生成绩管理系统</h3>
+                        <h4 class="text-xl font-semibold mb-3 text-secondary">学生成绩管理系统</h4>
                         <p class="text-light/70 mb-4 text-sm">
-                            使用列表/字典存储学生成绩数据，实现添加、查询、修改、删除等功能。
+                            使用列表和字典存储学生成绩，实现基本的管理功能。
                         </p>
                         <ul class="space-y-2 text-sm text-light/80">
                             <li class="flex items-center">
                                 <i class="fa fa-check-circle text-secondary mr-2"></i>
-                                <span>使用列表/字典存储数据</span>
+                                <span>数据存储（列表/字典）</span>
                             </li>
                             <li class="flex items-center">
                                 <i class="fa fa-check-circle text-secondary mr-2"></i>
-                                <span>实现基本的CRUD操作</span>
+                                <span>添加、查询、修改成绩</span>
                             </li>
                             <li class="flex items-center">
                                 <i class="fa fa-check-circle text-secondary mr-2"></i>
-                                <span>数据统计功能</span>
+                                <span>成绩统计与分析</span>
                             </li>
                         </ul>
                     </div>
                 </div>
             </div>
-            
-            <!-- 完整数据分析项目 -->
-            <div>
-                <h3 class="text-2xl font-semibold mb-6 text-primary text-center">完整数据分析项目</h3>
-                <div class="tech-card p-6 rounded-2xl glow-effect">
-                    <div class="bg-accent/20 w-16 h-16 rounded-full flex items-center justify-center mb-5">
-                        <i class="fa fa-line-chart text-2xl text-accent"></i>
+
+            <!-- 阶段二项目 -->
+            <div class="mb-12">
+                <h3 class="text-xl font-semibold mb-6 text-primary text-center">阶段二项目</h3>
+                <div class="tech-card p-6 rounded-2xl card-hover glow-effect">
+                    <div class="bg-accent/20 w-14 h-14 rounded-full flex items-center justify-center mb-5">
+                        <i class="fa fa-table text-2xl text-accent"></i>
                     </div>
-                    <h3 class="text-xl font-semibold mb-3 text-accent">公开数据集分析</h3>
-                    <p class="text-light/70 mb-6 text-sm">
-                        分析某公开数据集（如Kaggle上的Titanic数据集、电影票房数据），完成从数据加载、清洗、探索性分析到得出洞察并生成可视化报告的完整流程，并将代码上传至GitHub。
+                    <h4 class="text-xl font-semibold mb-3 text-accent">CSV数据处理与可视化</h4>
+                    <p class="text-light/70 mb-4 text-sm">
+                        使用Pandas读取CSV文件，进行数据清洗和简单分析，并用Matplotlib可视化结果。
                     </p>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="bg-darkgray/50 p-4 rounded-lg">
-                            <h4 class="font-medium text-primary mb-2">数据加载与清洗</h4>
-                            <ul class="space-y-1 text-sm text-light/70">
-                                <li class="flex items-center">
-                                    <i class="fa fa-angle-right text-primary mr-2"></i>
-                                    <span>使用Pandas读取数据</span>
-                                </li>
-                                <li class="flex items-center">
-                                    <i class="fa fa-angle-right text-primary mr-2"></i>
-                                    <span>处理缺失值</span>
-                                </li>
-                                <li class="flex items-center">
-                                    <i class="fa fa-angle-right text-primary mr-2"></i>
-                                    <span>数据类型转换</span>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="bg-darkgray/50 p-4 rounded-lg">
-                            <h4 class="font-medium text-secondary mb-2">探索性分析</h4>
-                            <ul class="space-y-1 text-sm text-light/70">
-                                <li class="flex items-center">
-                                    <i class="fa fa-angle-right text-secondary mr-2"></i>
-                                    <span>描述性统计</span>
-                                </li>
-                                <li class="flex items-center">
-                                    <i class="fa fa-angle-right text-secondary mr-2"></i>
-                                    <span>数据分布分析</span>
-                                </li>
-                                <li class="flex items-center">
-                                    <i class="fa fa-angle-right text-secondary mr-2"></i>
-                                    <span>相关性分析</span>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="bg-darkgray/50 p-4 rounded-lg">
-                            <h4 class="font-medium text-accent mb-2">可视化与报告</h4>
-                            <ul class="space-y-1 text-sm text-light/70">
-                                <li class="flex items-center">
-                                    <i class="fa fa-angle-right text-accent mr-2"></i>
-                                    <span>使用Matplotlib绘制图表</span>
-                                </li>
-                                <li class="flex items-center">
-                                    <i class="fa fa-angle-right text-accent mr-2"></i>
-                                    <span>生成HTML报告</span>
-                                </li>
-                                <li class="flex items-center">
-                                    <i class="fa fa-angle-right text-accent mr-2"></i>
-                                    <span>上传至GitHub</span>
-                                </li>
-                            </ul>
-                        </div>
+                    <ul class="space-y-2 text-sm text-light/80">
+                        <li class="flex items-center">
+                            <i class="fa fa-check-circle text-accent mr-2"></i>
+                            <span>使用Pandas读取和处理CSV</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-check-circle text-accent mr-2"></i>
+                            <span>数据清洗与筛选</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-check-circle text-accent mr-2"></i>
+                            <span>数据统计与分析</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-check-circle text-accent mr-2"></i>
+                            <span>使用Matplotlib绘制图表</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 阶段三项目 -->
+            <div>
+                <h3 class="text-xl font-semibold mb-6 text-primary text-center">阶段三项目</h3>
+                <div class="tech-card p-6 rounded-2xl card-hover glow-effect">
+                    <div class="bg-primary/20 w-14 h-14 rounded-full flex items-center justify-center mb-5">
+                        <i class="fa fa-line-chart text-2xl text-primary"></i>
                     </div>
+                    <h4 class="text-xl font-semibold mb-3 text-primary">完整数据分析项目</h4>
+                    <p class="text-light/70 mb-4 text-sm">
+                        分析一个公开数据集（如Kaggle上的Titanic数据集），完成从数据加载、清洗、探索性分析到生成可视化报告的完整流程。
+                    </p>
+                    <ul class="space-y-2 text-sm text-light/80">
+                        <li class="flex items-center">
+                            <i class="fa fa-check-circle text-primary mr-2"></i>
+                            <span>数据获取与加载</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-check-circle text-primary mr-2"></i>
+                            <span>数据清洗与预处理</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-check-circle text-primary mr-2"></i>
+                            <span>探索性数据分析</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-check-circle text-primary mr-2"></i>
+                            <span>数据可视化</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-check-circle text-primary mr-2"></i>
+                            <span>生成分析报告</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-check-circle text-primary mr-2"></i>
+                            <span>代码上传至GitHub</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -634,199 +858,238 @@
             }
         });
 
-        // 代码运行功能
-        let pyodide;
-        let codeEditors = [];
+        // 代码编辑器相关功能
+        let pyodide = null;
+        let isPyodideLoaded = false;
 
         // 初始化Pyodide
         async function initPyodide() {
+            const outputDiv = document.getElementById('code-output');
+            outputDiv.textContent = '正在加载Python环境...';
+            
             try {
-                pyodide = await loadPyodide({
-                    indexURL: "https://pyodide-cdn2.iodide.io/v0.22.1/full/"
-                });
-                console.log("Pyodide 初始化成功");
+                pyodide = await loadPyodide();
+                isPyodideLoaded = true;
+                outputDiv.textContent = 'Python环境已加载完成！准备就绪，点击运行按钮开始！';
             } catch (error) {
-                console.error("Pyodide 初始化失败:", error);
+                outputDiv.textContent = `加载Python环境失败: ${error}`;
             }
         }
 
-        // 运行Python代码
-        async function runPythonCode(code, outputElement) {
-            if (!pyodide) {
-                outputElement.textContent = "Pyodide 正在初始化，请稍候...";
-                await initPyodide();
+        // 切换面板折叠
+        document.getElementById('toggle-btn').addEventListener('click', function() {
+            const panel = document.getElementById('code-panel');
+            panel.classList.toggle('collapsed');
+            
+            // 如果展开且Pyodide未加载，则初始化
+            if (!panel.classList.contains('collapsed') && !isPyodideLoaded) {
+                initPyodide();
             }
-
-            try {
-                outputElement.textContent = "运行中...";
-                // 重定向标准输出到outputElement
-                pyodide.runPython(`
-                    import sys
-                    sys.stdout = sys.stderr = open('output.txt', 'w')
-                `);
-                // 运行用户代码
-                pyodide.runPython(code);
-                // 读取输出
-                const output = pyodide.runPython(`
-                    with open('output.txt', 'r') as f:
-                        print(f.read())
-                `);
-                outputElement.textContent = output;
-            } catch (error) {
-                outputElement.textContent = `错误: ${error.message}`;
-            }
-        }
-
-        // 初始化代码编辑器
-        function initCodeEditors() {
-            const codeBlocks = document.querySelectorAll('.code-editor');
-            codeBlocks.forEach((block, index) => {
-                const textarea = block.querySelector('textarea');
-                const outputElement = block.querySelector('.code-output');
-                const runButton = block.querySelector('.code-btn-run');
-                const clearButton = block.querySelector('.code-btn-clear');
-
-                if (textarea && outputElement) {
-                    const editor = CodeMirror.fromTextArea(textarea, {
-                        mode: 'python',
-                        theme: 'monokai',
-                        lineNumbers: true,
-                        matchBrackets: true,
-                        autoCloseBrackets: true,
-                        indentUnit: 4,
-                        tabSize: 4,
-                        lineWrapping: true
-                    });
-
-                    codeEditors.push(editor);
-
-                    if (runButton) {
-                        runButton.addEventListener('click', () => {
-                            const code = editor.getValue();
-                            runPythonCode(code, outputElement);
-                        });
-                    }
-
-                    if (clearButton) {
-                        clearButton.addEventListener('click', () => {
-                            editor.setValue('');
-                            outputElement.textContent = '';
-                        });
-                    }
-                }
-            });
-        }
-
-        // 初始化浮动代码编辑器
-        function initFloatingCodeEditor() {
-            // 定义初始示例代码
-            const initialCode = `# 示例代码
-print("Hello, Python!")
-
-# 计算斐波那契数列
-def fibonacci(n):
-    a, b = 0, 1
-    for _ in range(n):
-        print(a)
-        a, b = b, a + b
-
-fibonacci(10)`;
-
-            const floatingEditor = document.createElement('div');
-            floatingEditor.className = 'code-floating';
-            floatingEditor.id = 'floating-code-editor';
-            floatingEditor.innerHTML = `
-                <div class="code-floating-header">
-                    <span class="text-primary font-medium">Python 代码运行器</span>
-                    <button class="text-light hover:text-primary" id="toggle-floating-editor">
-                        <i class="fa fa-chevron-up"></i>
-                    </button>
-                </div>
-                <div class="code-floating-content">
-                    <div class="code-controls">
-                        <div class="flex space-x-2">
-                            <button class="code-btn code-btn-run" id="run-floating-code">运行</button>
-                            <button class="code-btn code-btn-clear" id="clear-floating-code">清空</button>
-                            <button class="code-btn code-btn-clear" id="reset-floating-code">重置</button>
-                        </div>
-                        <span class="text-sm text-light/60">在浏览器中运行 Python 代码</span>
-                    </div>
-                    <textarea id="floating-code-area"></textarea>
-                    <div class="code-output" id="floating-code-output"></div>
-                </div>
-            `;
-
-            document.body.appendChild(floatingEditor);
-
-            // 初始化编辑器
-            const textarea = document.getElementById('floating-code-area');
-            const outputElement = document.getElementById('floating-code-output');
-            const runButton = document.getElementById('run-floating-code');
-            const clearButton = document.getElementById('clear-floating-code');
-            const resetButton = document.getElementById('reset-floating-code');
-            const toggleButton = document.getElementById('toggle-floating-editor');
-            const editorContainer = document.getElementById('floating-code-editor');
-
-            const editor = CodeMirror.fromTextArea(textarea, {
-                mode: 'python',
-                theme: 'monokai',
-                lineNumbers: true,
-                matchBrackets: true,
-                autoCloseBrackets: true,
-                indentUnit: 4,
-                tabSize: 4,
-                lineWrapping: true
-            });
-
-            // 添加示例代码
-            editor.setValue(initialCode);
-
-            // 绑定事件
-            if (runButton) {
-                runButton.addEventListener('click', () => {
-                    const code = editor.getValue();
-                    runPythonCode(code, outputElement);
-                });
-            }
-
-            if (clearButton) {
-                clearButton.addEventListener('click', () => {
-                    editor.setValue('');
-                    outputElement.textContent = '';
-                });
-            }
-
-            if (resetButton) {
-                resetButton.addEventListener('click', () => {
-                    editor.setValue(initialCode);
-                    outputElement.textContent = '';
-                });
-            }
-
-            if (toggleButton && editorContainer) {
-                toggleButton.addEventListener('click', () => {
-                    editorContainer.classList.toggle('collapsed');
-                    const icon = toggleButton.querySelector('i');
-                    if (editorContainer.classList.contains('collapsed')) {
-                        icon.classList.remove('fa-chevron-up');
-                        icon.classList.add('fa-chevron-down');
-                    } else {
-                        icon.classList.remove('fa-chevron-down');
-                        icon.classList.add('fa-chevron-up');
-                    }
-                });
-            }
-        }
-
-        // 页面加载完成后初始化
-        window.addEventListener('DOMContentLoaded', async () => {
-            // 初始化Pyodide
-            await initPyodide();
-            // 初始化代码编辑器
-            initCodeEditors();
-            // 初始化浮动代码编辑器
-            initFloatingCodeEditor();
         });
+
+        // 运行代码
+        document.getElementById('run-btn').addEventListener('click', async function() {
+            const code = document.getElementById('code-editor').value;
+            const outputDiv = document.getElementById('code-output');
+            
+            if (!isPyodideLoaded) {
+                outputDiv.textContent = 'Python环境正在加载中，请稍候...';
+                return;
+            }
+            
+            outputDiv.textContent = '正在运行...';
+            
+            try {
+                pyodide.runPython(`
+import sys
+from io import StringIO
+
+# 重定向stdout
+sys.stdout = StringIO()
+`);
+                
+                pyodide.runPython(code);
+                
+                const result = pyodide.runPython('sys.stdout.getvalue()');
+                outputDiv.textContent = result || '代码执行成功，但没有输出。';
+                outputDiv.style.color = '#4ade80';
+                
+            } catch (error) {
+                outputDiv.textContent = `错误: ${error}`;
+                outputDiv.style.color = '#f87171';
+            }
+        });
+
+        // 清空按钮
+        document.getElementById('clear-btn').addEventListener('click', function() {
+            document.getElementById('code-editor').value = '';
+            document.getElementById('code-output').textContent = '已清空，请输入新代码！';
+            document.getElementById('code-output').style.color = '#4ade80';
+        });
+
+        // 重置按钮
+        document.getElementById('reset-btn').addEventListener('click', function() {
+            const defaultCode = `print("Hello, Python!")
+
+# 示例：变量和数据类型
+x = 10
+y = 3.14
+name = "严秀琼"
+is_student = True
+
+print(f"x = {x}, 类型: {type(x)}")
+print(f"y = {y}, 类型: {type(y)}")
+print(f"name = {name}, 类型: {type(name)}")
+print(f"is_student = {is_student}, 类型: {type(is_student)}")
+
+# 示例：列表操作
+numbers = [1, 2, 3, 4, 5]
+numbers_squared = [n**2 for n in numbers]
+print(f"\n列表: {numbers}")
+print(f"平方: {numbers_squared}")`;
+            
+            document.getElementById('code-editor').value = defaultCode;
+            document.getElementById('code-output').textContent = '已重置为默认示例代码！';
+            document.getElementById('code-output').style.color = '#4ade80';
+        });
+
+        // 示例代码库
+        const codeExamples = {
+            'variables': `# 变量与数据类型示例
+x = 10
+y = 3.14
+name = "严秀琼"
+is_student = True
+
+print(f"x = {x}, 类型: {type(x)}")
+print(f"y = {y}, 类型: {type(y)}")
+print(f"name = {name}, 类型: {type(name)}")
+print(f"is_student = {is_student}, 类型: {type(is_student)}")`,
+            
+            'lists': `# 列表操作示例
+numbers = [1, 2, 3, 4, 5]
+print(f"原始列表: {numbers}")
+
+# 索引和切片
+print(f"第一个元素: {numbers[0]}")
+print(f"前三个元素: {numbers[:3]}")
+
+# 列表推导式
+squared = [n**2 for n in numbers]
+print(f"平方列表: {squared}")
+
+# 增加元素
+numbers.append(6)
+print(f"添加后: {numbers}")
+
+# 列表操作
+print(f"长度: {len(numbers)}")
+print(f"总和: {sum(numbers)}")
+print(f"最大值: {max(numbers)}")`,
+            
+            'dictionaries': `# 字典操作示例
+student = {
+    "name": "严秀琼",
+    "age": 20,
+    "major": "数据科学",
+    "grades": [90, 85, 95]
+}
+
+print(f"学生信息: {student}")
+print(f"姓名: {student['name']}")
+print(f"专业: {student['major']}")
+
+# 访问所有键和值
+print(f"\n键: {list(student.keys())}")
+print(f"值: {list(student.values())}")
+
+# 添加新键值对
+student['email'] = "student@example.com"
+print(f"\n添加邮箱后: {student}")
+
+# 遍历字典
+print("\n遍历字典:")
+for key, value in student.items():
+    print(f"{key}: {value}")`,
+            
+            'control_flow': `# 控制流示例
+score = 85
+
+# if-elif-else
+if score >= 90:
+    grade = "优秀"
+elif score >= 80:
+    grade = "良好"
+elif score >= 60:
+    grade = "及格"
+else:
+    grade = "不及格"
+
+print(f"分数: {score}, 等级: {grade}")
+
+# for循环
+print("\nfor循环示例:")
+for i in range(1, 6):
+    print(f"{i} * {i} = {i*i}")
+
+# while循环
+print("\nwhile循环示例:")
+count = 1
+while count <= 5:
+    print(f"计数: {count}")
+    count += 1`,
+            
+            'functions': `# 函数示例
+def greet(name, greeting="你好"):
+    return f"{greeting}, {name}!"
+
+# 调用函数
+message1 = greet("严秀琼")
+message2 = greet("Python", "欢迎")
+print(message1)
+print(message2)
+
+# 计算函数
+def calculate_area(width, height):
+    area = width * height
+    perimeter = 2 * (width + height)
+    return area, perimeter
+
+area, perimeter = calculate_area(5, 3)
+print(f"\n矩形面积: {area}")
+print(f"矩形周长: {perimeter}")
+
+# 可变参数
+def sum_all(*numbers):
+    return sum(numbers)
+
+print(f"\n求和: {sum_all(1, 2, 3, 4, 5)}")`
+        };
+
+        // 加载示例代码
+        function loadCodeExample(exampleId) {
+            const editor = document.getElementById('code-editor');
+            const panel = document.getElementById('code-panel');
+            
+            // 加载代码
+            if (codeExamples[exampleId]) {
+                editor.value = codeExamples[exampleId];
+            }
+            
+            // 展开面板
+            if (panel.classList.contains('collapsed')) {
+                panel.classList.remove('collapsed');
+                if (!isPyodideLoaded) {
+                    initPyodide();
+                }
+            }
+            
+            // 滚动到面板
+            panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // 页面加载完成后，确保示例代码函数可用
+        window.loadCodeExample = loadCodeExample;
     </script>
 </body>
 </html>
