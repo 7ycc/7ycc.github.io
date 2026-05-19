@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>甜品烘焙 - 严秀琼</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#7c3aed',
+                        secondary: '#8b5cf6',
+                        accent: '#a78bfa',
+                        dark: '#1e1e1e',
+                        light: '#fafafa',
+                        gray: '#e5e7eb',
+                        muted: '#6b7280',
+                        cream: '#fef7ed'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .transition-all-300 {
+                transition: all 0.3s ease;
+            }
+            .card-hover {
+                @apply transition-all duration-300 hover:shadow-md hover:-translate-y-1;
+            }
+            .soft-shadow {
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            }
+        }
+    </style>
+</head>
+<body class="bg-cream text-gray-800">
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-b border-gray-100 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-gray-800">严秀琼</a>
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html#about" class="text-muted hover:text-primary transition-all-300">关于我</a>
+                <a href="index.html#skills" class="text-muted hover:text-primary transition-all-300">技能</a>
+                <a href="index.html#interests" class="text-muted hover:text-primary transition-all-300">兴趣</a>
+                <a href="music.html" class="text-muted hover:text-primary transition-all-300">音乐</a>
+                <a href="bakery.html" class="text-primary font-medium">甜品烘焙</a>
+                <a href="hometown.html" class="text-muted hover:text-primary transition-all-300">我的家乡</a>
+                <a href="python-course.html" class="text-muted hover:text-primary transition-all-300">Python课程</a>
+                <a href="index.html#contact" class="text-muted hover:text-primary transition-all-300">联系我</a>
+            </div>
+            <button class="md:hidden text-gray-800">
+                <i class="fa fa-bars text-xl"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <section class="pt-28 pb-24">
+        <div class="container mx-auto px-6">
+            <!-- 标题区域 -->
+            <div class="text-center mb-16">
+                <h1 class="text-4xl md:text-5xl font-light mb-4 text-gray-800">
+                    <i class="fa fa-birthday-cake text-primary mr-3"></i>甜品烘焙
+                </h1>
+                <h2 class="text-2xl font-light mb-6 text-muted">
+                    <i class="fa fa-heart text-gray-600 mr-3"></i>甜蜜时光
+                </h2>
+                <p class="text-lg text-muted max-w-2xl mx-auto">
+                    用双手创造甜蜜，用温度烘焙幸福。每一份甜品，都承载着对生活的热爱。
+                </p>
+            </div>
+
+            <!-- 烘焙展示区 -->
+            <div class="max-w-6xl mx-auto">
+                <div class="bg-white p-12 rounded-3xl soft-shadow mb-12">
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-medium text-gray-800 mb-4">烘焙的魅力</h3>
+                        <p class="text-muted leading-relaxed max-w-3xl mx-auto">
+                            烘焙是一门艺术，也是一种生活态度。从选材到成品，每一步都需要耐心和用心。
+                            我喜欢在周末的午后，烤一份香甜的蛋糕或饼干，让整个房间弥漫着幸福的香气。
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- 蛋糕 -->
+                    <div class="bg-white p-8 rounded-2xl soft-shadow card-hover">
+                        <div class="bg-pink-50 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
+                            <i class="fa fa-birthday-cake text-2xl text-pink-500"></i>
+                        </div>
+                        <h3 class="text-xl font-medium mb-3 text-center text-gray-800">蛋糕</h3>
+                        <p class="text-muted text-center text-sm">
+                            从戚风蛋糕到奶油蛋糕，每一款都是用心配制。柔软的蛋糕体配上细腻的奶油，甜蜜在舌尖绽放。
+                        </p>
+                    </div>
+
+                    <!-- 饼干 -->
+                    <div class="bg-white p-8 rounded-2xl soft-shadow card-hover">
+                        <div class="bg-yellow-50 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
+                            <i class="fa fa-cookie text-2xl text-yellow-600"></i>
+                        </div>
+                        <h3 class="text-xl font-medium mb-3 text-center text-gray-800">饼干</h3>
+                        <p class="text-muted text-center text-sm">
+                            黄油曲奇、巧克力饼干、蔓越莓饼干...每一块都酥脆可口，是下午茶的完美搭档。
+                        </p>
+                    </div>
+
+                    <!-- 面包 -->
+                    <div class="bg-white p-8 rounded-2xl soft-shadow card-hover">
+                        <div class="bg-orange-50 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
+                            <i class="fa fa-cutlery text-2xl text-orange-500"></i>
+                        </div>
+                        <h3 class="text-xl font-medium mb-3 text-center text-gray-800">面包</h3>
+                        <p class="text-muted text-center text-sm">
+                            柔软的面包需要耐心的发酵和揉面，当烤箱里飘出阵阵麦香，一切都变得值得。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-white border-t border-gray-100 py-10">
+        <div class="container mx-auto px-6 text-center">
+            <div class="flex justify-center space-x-8 mb-6">
+                <a href="#" class="text-muted hover:text-primary transition-all-300">
+                    <i class="fa fa-weixin text-2xl"></i>
+                </a>
+                <a href="#" class="text-muted hover:text-primary transition-all-300">
+                    <i class="fa fa-weibo text-2xl"></i>
+                </a>
+                <a href="#" class="text-muted hover:text-primary transition-all-300">
+                    <i class="fa fa-github text-2xl"></i>
+                </a>
+            </div>
+            <p class="text-muted text-sm">© 2026 严秀琼. 保留所有权利.</p>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-md');
+            } else {
+                nav.classList.remove('shadow-md');
+            }
+        });
+    </script>
+</body>
+</html>
