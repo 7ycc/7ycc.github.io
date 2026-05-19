@@ -129,21 +129,33 @@
 </head>
 <body class="bg-dark text-light">
     <!-- 导航栏 -->
-    <nav class="fixed top-0 left-0 right-0 bg-dark/90 backdrop-blur-md border-b border-primary/20 z-50">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <a href="python-course.html" class="text-2xl font-bold text-primary text-shadow">Python基础课程</a>
-            <div class="hidden md:flex space-x-8">
-                <a href="#course-content" class="hover:text-primary transition-all-300">课程内容</a>
-                <a href="#resources" class="hover:text-primary transition-all-300">学习资源</a>
-                <a href="#practice" class="hover:text-primary transition-all-300">实践项目</a>
-                <a href="music.html" class="text-muted hover:text-primary transition-all-300">音乐</a>
-                <a href="bakery.html" class="text-muted hover:text-primary transition-all-300">甜品烘焙</a>
-                <a href="hometown.html" class="text-muted hover:text-primary transition-all-300">我的家乡</a>
-                <a href="index.html" class="hover:text-primary transition-all-300">返回主页</a>
+    <nav class="fixed top-4 left-0 right-0 z-50">
+        <div class="container mx-auto px-6">
+            <div class="bg-white/70 backdrop-blur-xl rounded-full px-8 py-4 shadow-lg border border-white/30">
+                <div class="flex justify-between items-center">
+                    <a href="index.html" class="text-xl font-bold text-gray-900">严秀琼</a>
+                    <div class="hidden md:flex items-center space-x-0">
+                        <a href="index.html#about" class="text-gray-900 hover:text-green-700 transition-all-300 px-4 py-1 relative">关于我</a>
+                        <span class="text-gray-300">|</span>
+                        <a href="index.html#skills" class="text-gray-900 hover:text-green-700 transition-all-300 px-4 py-1 relative">技能</a>
+                        <span class="text-gray-300">|</span>
+                        <a href="index.html#interests" class="text-gray-900 hover:text-green-700 transition-all-300 px-4 py-1 relative">兴趣</a>
+                        <span class="text-gray-300">|</span>
+                        <a href="music.html" class="text-gray-900 hover:text-green-700 transition-all-300 px-4 py-1 relative">音乐</a>
+                        <span class="text-gray-300">|</span>
+                        <a href="bakery.html" class="text-gray-900 hover:text-green-700 transition-all-300 px-4 py-1 relative">甜品烘焙</a>
+                        <span class="text-gray-300">|</span>
+                        <a href="hometown.html" class="text-gray-900 hover:text-green-700 transition-all-300 px-4 py-1 relative">我的家乡</a>
+                        <span class="text-gray-300">|</span>
+                        <a href="python-course.html" class="text-gray-900 hover:text-green-700 transition-all-300 px-4 py-1 relative">Python课程</a>
+                        <span class="text-gray-300">|</span>
+                        <a href="index.html#contact" class="text-gray-900 hover:text-green-700 transition-all-300 px-4 py-1 relative">联系我</a>
+                    </div>
+                    <button class="md:hidden text-gray-900">
+                        <i class="fa fa-bars text-xl"></i>
+                    </button>
+                </div>
             </div>
-            <button class="md:hidden text-light">
-                <i class="fa fa-bars text-xl"></i>
-            </button>
         </div>
     </nav>
 
@@ -194,7 +206,7 @@ print(f"平方: {numbers_squared}")</textarea>
     </div>
 
     <!-- 英雄区域 -->
-    <section class="min-h-screen flex items-center justify-center tech-bg pt-20">
+    <section class="min-h-screen flex items-center justify-center tech-bg pt-36">
         <div class="container mx-auto px-4 text-center">
             <h1 class="text-4xl md:text-6xl font-bold mb-4 text-shadow text-white">Python基础课程</h1>
             <p class="text-xl md:text-2xl text-primary/80 mb-8">从零开始学习Python编程基础</p>
