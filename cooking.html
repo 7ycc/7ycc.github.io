@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>甜品烘焙 - 严秀琼</title>
+    <title>西式烹饪 - 严秀琼</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script>
@@ -18,7 +18,7 @@
                         light: '#fafafa',
                         gray: '#e5e7eb',
                         muted: '#6b7280',
-                        cream: '#fef7ed'
+                        sage: '#f0fdf4'
                     },
                     fontFamily: {
                         sans: ['Inter', 'system-ui', 'sans-serif'],
@@ -41,7 +41,7 @@
         }
     </style>
 </head>
-<body class="bg-cream text-gray-800">
+<body class="bg-sage text-gray-800">
     <!-- 导航栏 -->
     <nav class="fixed top-4 left-0 right-0 z-50">
         <div class="container mx-auto px-6">
@@ -73,66 +73,100 @@
             <!-- 标题区域 -->
             <div class="text-center mb-16">
                 <h1 class="text-4xl md:text-5xl font-light mb-4 text-gray-800">
-                    <i class="fa fa-birthday-cake text-primary mr-3"></i>甜品烘焙
+                    <i class="fa fa-cutlery text-primary mr-3"></i>西式烹饪
                 </h1>
                 <h2 class="text-2xl font-light mb-6 text-muted">
-                    <i class="fa fa-heart text-gray-600 mr-3"></i>甜蜜时光
+                    <i class="fa fa-fire text-gray-600 mr-3"></i>烹饪的艺术
                 </h2>
                 <p class="text-lg text-muted max-w-2xl mx-auto">
-                    用双手创造甜蜜，用温度烘焙幸福。每一份甜品，都承载着对生活的热爱。
+                    用食材谱写美味，用火候掌控风味。每一道西式料理，都是对美食的致敬与探索。
                 </p>
             </div>
 
-            <!-- 烘焙展示区 -->
+            <!-- 烹饪展示区 -->
             <div class="max-w-6xl mx-auto">
                 <div class="bg-white p-12 rounded-3xl soft-shadow mb-12">
                     <div class="text-center mb-8">
-                        <h3 class="text-2xl font-medium text-gray-800 mb-4">烘焙的魅力</h3>
+                        <h3 class="text-2xl font-medium text-gray-800 mb-4">西式烹饪的魅力</h3>
                         <p class="text-muted leading-relaxed max-w-3xl mx-auto">
-                            烘焙是一门艺术，也是一种生活态度。从选材到成品，每一步都需要耐心和用心。
-                            我喜欢在周末的午后，烤一份香甜的蛋糕或饼干，让整个房间弥漫着幸福的香气。
+                            西式烹饪注重食材的原味与酱汁的搭配，从经典的牛排、意面到精致的法式甜点，
+                            每一道菜都蕴含着独特的烹饪技巧和文化底蕴。我喜欢在厨房里 experimenting with flavors，
+                            将简单的食材变成令人惊艳的美味佳肴。
                         </p>
                     </div>
                 </div>
 
-                <!-- 我的烘焙作品 -->
+                <!-- 我的烹饪作品 -->
                 <div class="text-center mb-12">
                     <h2 class="text-2xl font-medium text-gray-800">
-                        <i class="fa fa-camera text-primary mr-3"></i>我的烘焙作品
+                        <i class="fa fa-camera text-primary mr-3"></i>我的烹饪作品
                     </h2>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- 蛋糕 -->
+                    <!-- 牛排 -->
+                    <div class="bg-white p-8 rounded-2xl soft-shadow card-hover">
+                        <div class="bg-red-50 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
+                            <i class="fa fa-fire text-2xl text-red-500"></i>
+                        </div>
+                        <h3 class="text-xl font-medium mb-3 text-center text-gray-800">牛排</h3>
+                        <p class="text-muted text-center text-sm">
+                            从选材到煎制，掌握火候是关键。外焦里嫩的完美牛排，搭配黑胡椒酱汁，是西餐的经典之作。
+                        </p>
+                    </div>
+
+                    <!-- 意面 -->
+                    <div class="bg-white p-8 rounded-2xl soft-shadow card-hover">
+                        <div class="bg-yellow-50 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
+                            <i class="fa fa-spoon text-2xl text-yellow-600"></i>
+                        </div>
+                        <h3 class="text-xl font-medium mb-3 text-center text-gray-800">意面</h3>
+                        <p class="text-muted text-center text-sm">
+                            番茄肉酱、奶油培根、青酱罗勒...每一种酱汁都有独特的风味，搭配劲道的意面，美味无穷。
+                        </p>
+                    </div>
+
+                    <!-- 沙拉 -->
+                    <div class="bg-white p-8 rounded-2xl soft-shadow card-hover">
+                        <div class="bg-green-50 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
+                            <i class="fa fa-leaf text-2xl text-green-500"></i>
+                        </div>
+                        <h3 class="text-xl font-medium mb-3 text-center text-gray-800">沙拉</h3>
+                        <p class="text-muted text-center text-sm">
+                            新鲜蔬菜搭配特制油醋汁或凯撒酱，清爽健康又美味，是西式餐桌上不可或缺的配菜。
+                        </p>
+                    </div>
+
+                    <!-- 汤品 -->
+                    <div class="bg-white p-8 rounded-2xl soft-shadow card-hover">
+                        <div class="bg-orange-50 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
+                            <i class="fa fa-coffee text-2xl text-orange-500"></i>
+                        </div>
+                        <h3 class="text-xl font-medium mb-3 text-center text-gray-800">汤品</h3>
+                        <p class="text-muted text-center text-sm">
+                            奶油蘑菇汤、法式洋葱汤、罗宋汤...浓郁的汤底，丰富的口感，温暖每一个味蕾。
+                        </p>
+                    </div>
+
+                    <!-- 披萨 -->
+                    <div class="bg-white p-8 rounded-2xl soft-shadow card-hover">
+                        <div class="bg-amber-50 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
+                            <i class="fa fa-circle-o text-2xl text-amber-600"></i>
+                        </div>
+                        <h3 class="text-xl font-medium mb-3 text-center text-gray-800">披萨</h3>
+                        <p class="text-muted text-center text-sm">
+                            薄脆的饼底，丰富的配料，拉丝的芝士。从玛格丽特到夏威夷，每一种口味都是经典。
+                        </p>
+                    </div>
+
+                    <!-- 甜点 -->
                     <div class="bg-white p-8 rounded-2xl soft-shadow card-hover">
                         <div class="bg-pink-50 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
                             <i class="fa fa-birthday-cake text-2xl text-pink-500"></i>
                         </div>
-                        <h3 class="text-xl font-medium mb-3 text-center text-gray-800">蛋糕</h3>
+                        <h3 class="text-xl font-medium mb-3 text-center text-gray-800">西式甜点</h3>
                         <p class="text-muted text-center text-sm">
-                            从戚风蛋糕到奶油蛋糕，每一款都是用心配制。柔软的蛋糕体配上细腻的奶油，甜蜜在舌尖绽放。
-                        </p>
-                    </div>
-
-                    <!-- 饼干 -->
-                    <div class="bg-white p-8 rounded-2xl soft-shadow card-hover">
-                        <div class="bg-yellow-50 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
-                            <i class="fa fa-cookie text-2xl text-yellow-600"></i>
-                        </div>
-                        <h3 class="text-xl font-medium mb-3 text-center text-gray-800">饼干</h3>
-                        <p class="text-muted text-center text-sm">
-                            黄油曲奇、巧克力饼干、蔓越莓饼干...每一块都酥脆可口，是下午茶的完美搭档。
-                        </p>
-                    </div>
-
-                    <!-- 面包 -->
-                    <div class="bg-white p-8 rounded-2xl soft-shadow card-hover">
-                        <div class="bg-orange-50 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
-                            <i class="fa fa-cutlery text-2xl text-orange-500"></i>
-                        </div>
-                        <h3 class="text-xl font-medium mb-3 text-center text-gray-800">面包</h3>
-                        <p class="text-muted text-center text-sm">
-                            柔软的面包需要耐心的发酵和揉面，当烤箱里飘出阵阵麦香，一切都变得值得。
+                            提拉米苏、舒芙蕾、焦糖布丁...精致的西式甜点，为每一餐画上完美的句号。
                         </p>
                     </div>
                 </div>
