@@ -39,6 +39,79 @@
                 box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
             }
         }
+
+        /* 层叠卡片相册样式 */
+        .stack-card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: grab;
+            user-select: none;
+            touch-action: pan-y;
+        }
+
+        .stack-card:active {
+            cursor: grabbing;
+        }
+
+        .stack-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        .stack-card.top {
+            z-index: 10;
+            transform: translateX(0) scale(1);
+            opacity: 1;
+        }
+
+        .stack-card.behind-1 {
+            z-index: 9;
+            transform: translateY(20px) scale(0.95);
+            opacity: 0.7;
+        }
+
+        .stack-card.behind-2 {
+            z-index: 8;
+            transform: translateY(40px) scale(0.9);
+            opacity: 0.5;
+        }
+
+        .stack-card.behind-3 {
+            z-index: 7;
+            transform: translateY(60px) scale(0.85);
+            opacity: 0.3;
+        }
+
+        .stack-card.exit-left {
+            transform: translateX(-150%) rotate(-20deg);
+            opacity: 0;
+        }
+
+        .stack-card.exit-right {
+            transform: translateX(150%) rotate(20deg);
+            opacity: 0;
+        }
+
+        .indicator-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #d1d5db;
+            transition: all 0.3s ease;
+        }
+
+        .indicator-dot.active {
+            width: 24px;
+            border-radius: 12px;
+            background: #7c3aed;
+        }
     </style>
 </head>
 <body class="bg-sage text-gray-800">
@@ -174,6 +247,28 @@
         </div>
     </section>
 
+    <!-- 烹饪相册 -->
+    <section class="py-24 bg-gradient-to-br from-sage via-green-50 to-emerald-50 overflow-hidden">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-medium text-gray-800 mb-4">
+                    <i class="fa fa-picture-o text-primary mr-3"></i>烹饪瞬间
+                </h2>
+                <p class="text-muted">左右滑动探索更多美味时刻</p>
+            </div>
+
+            <!-- 层叠卡片相册容器 -->
+            <div class="relative max-w-lg mx-auto h-[500px]" id="cardStack">
+                <!-- 卡片将通过JS动态生成 -->
+            </div>
+
+            <!-- 指示器 -->
+            <div class="flex justify-center mt-8 space-x-2" id="indicators">
+                <!-- 指示器将通过JS生成 -->
+            </div>
+        </div>
+    </section>
+
     <!-- 页脚 -->
     <footer class="bg-white border-t border-gray-100 py-10">
         <div class="container mx-auto px-6 text-center">
@@ -193,6 +288,7 @@
     </footer>
 
     <script>
+        // 导航栏滚动效果
         window.addEventListener('scroll', function() {
             const nav = document.querySelector('nav');
             if (window.scrollY > 50) {
@@ -201,6 +297,159 @@
                 nav.classList.remove('shadow-md');
             }
         });
+
+        // 层叠卡片相册
+        const photos = [
+            'cook1.jpg', 'cook2.jpg', 'cook3.jpg', 'cook4.jpg', 'cook5.jpg',
+            'cook6.jpg', 'cook7.jpg', 'cook8.jpg', 'cook9.jpg', 'cook10.jpg',
+            'cook11.jpg', 'cook12.jpg', 'cook13.jpg'
+        ];
+
+        const cardStack = document.getElementById('cardStack');
+        const indicatorsContainer = document.getElementById('indicators');
+        let currentIndex = 0;
+        let isDragging = false;
+        let startX = 0;
+        let currentX = 0;
+        let velocity = 0;
+        let lastX = 0;
+        let lastTime = 0;
+
+        // 初始化卡片
+        function initCards() {
+            cardStack.innerHTML = '';
+            indicatorsContainer.innerHTML = '';
+
+            // 创建卡片（只显示当前和后面的3张）
+            const displayCount = Math.min(4, photos.length);
+            for (let i = 0; i < displayCount; i++) {
+                const photoIndex = (currentIndex + i) % photos.length;
+                const card = createCard(photos[photoIndex], i);
+                cardStack.appendChild(card);
+            }
+
+            // 创建指示器
+            photos.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'indicator-dot' + (index === currentIndex ? ' active' : '');
+                dot.addEventListener('click', () => goToSlide(index));
+                indicatorsContainer.appendChild(dot);
+            });
+        }
+
+        function createCard(src, position) {
+            const card = document.createElement('div');
+            card.className = 'stack-card';
+            
+            if (position === 0) card.classList.add('top');
+            else if (position === 1) card.classList.add('behind-1');
+            else if (position === 2) card.classList.add('behind-2');
+            else if (position === 3) card.classList.add('behind-3');
+
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = '烹饪作品';
+            card.appendChild(img);
+
+            // 触摸/鼠标事件
+            card.addEventListener('mousedown', handleStart);
+            card.addEventListener('touchstart', handleStart, { passive: true });
+            
+            return card;
+        }
+
+        function handleStart(e) {
+            if (e.target.closest('.stack-card') !== cardStack.firstElementChild) return;
+            
+            isDragging = true;
+            startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+            lastX = startX;
+            lastTime = Date.now();
+            
+            const card = cardStack.firstElementChild;
+            card.style.transition = 'none';
+
+            document.addEventListener('mousemove', handleMove);
+            document.addEventListener('mouseup', handleEnd);
+            document.addEventListener('touchmove', handleMove, { passive: true });
+            document.addEventListener('touchend', handleEnd);
+        }
+
+        function handleMove(e) {
+            if (!isDragging) return;
+            
+            const card = cardStack.firstElementChild;
+            currentX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+            const deltaX = currentX - startX;
+            
+            // 计算速度
+            const now = Date.now();
+            const dt = now - lastTime;
+            if (dt > 0) {
+                velocity = (currentX - lastX) / dt;
+            }
+            lastX = currentX;
+            lastTime = now;
+            
+            // 应用变换
+            const rotate = deltaX * 0.05;
+            card.style.transform = `translateX(${deltaX}px) rotate(${rotate}deg)`;
+        }
+
+        function handleEnd(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            
+            const card = cardStack.firstElementChild;
+            const deltaX = currentX - startX;
+            const threshold = 100;
+            const velocityThreshold = 0.5;
+            
+            card.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+            
+            // 根据位移或速度决定是否切换
+            if (deltaX > threshold || velocity > velocityThreshold) {
+                // 向右滑 - 上一张
+                card.classList.add('exit-right');
+                setTimeout(() => {
+                    currentIndex = (currentIndex - 1 + photos.length) % photos.length;
+                    initCards();
+                }, 300);
+            } else if (deltaX < -threshold || velocity < -velocityThreshold) {
+                // 向左滑 - 下一张
+                card.classList.add('exit-left');
+                setTimeout(() => {
+                    currentIndex = (currentIndex + 1) % photos.length;
+                    initCards();
+                }, 300);
+            } else {
+                // 回弹
+                card.style.transform = '';
+            }
+            
+            document.removeEventListener('mousemove', handleMove);
+            document.removeEventListener('mouseup', handleEnd);
+            document.removeEventListener('touchmove', handleMove);
+            document.removeEventListener('touchend', handleEnd);
+        }
+
+        function goToSlide(index) {
+            if (index === currentIndex) return;
+            
+            const card = cardStack.firstElementChild;
+            const direction = index > currentIndex ? 'left' : 'right';
+            
+            card.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+            card.classList.add(direction === 'left' ? 'exit-left' : 'exit-right');
+            
+            setTimeout(() => {
+                currentIndex = index;
+                initCards();
+            }, 300);
+        }
+
+        // 初始化
+        initCards();
     </script>
 </body>
 </html>
