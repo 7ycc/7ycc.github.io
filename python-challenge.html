@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python闯关 - 严秀琼</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#7c3aed',
+                        secondary: '#8b5cf6',
+                        accent: '#a78bfa',
+                        dark: '#1e1e1e',
+                        light: '#fafafa',
+                        gray: '#e5e7eb',
+                        muted: '#6b7280'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .transition-all-300 {
+                transition: all 0.3s ease;
+            }
+            .card-hover {
+                @apply transition-all duration-300 hover:shadow-md hover:-translate-y-1;
+            }
+            .soft-shadow {
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            }
+            .gradient-bg {
+                background: linear-gradient(135deg, #fafafa 0%, #f3f4f6 100%);
+            }
+        }
+    </style>
+    <style>
+        /* Terminal styles */
+        .terminal {
+            background: #1a1a2e;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+        .terminal-header {
+            background: #16213e;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .terminal-body {
+            padding: 20px;
+            min-height: 400px;
+            max-height: 500px;
+            overflow-y: auto;
+            font-family: 'Courier New', Consolas, monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #4ade80;
+        }
+        .terminal-body::-webkit-scrollbar {
+            width: 8px;
+        }
+        .terminal-body::-webkit-scrollbar-track {
+            background: #1a1a2e;
+        }
+        .terminal-body::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        .terminal-body::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        .terminal-line {
+            margin-bottom: 2px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .terminal-line.white { color: #ffffff; }
+        .terminal-line.green { color: #4ade80; }
+        .terminal-line.yellow { color: #fbbf24; }
+        .terminal-line.red { color: #f87171; }
+        .terminal-line.cyan { color: #22d3ee; }
+        .terminal-line.dim { color: #6b7280; }
+        .terminal-input-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .terminal-input {
+            flex: 1;
+            background: #0f0f23;
+            border: 1px solid #4ade80;
+            border-radius: 4px;
+            padding: 6px 10px;
+            color: #4ade80;
+            font-family: 'Courier New', Consolas, monospace;
+            font-size: 14px;
+            outline: none;
+        }
+        .terminal-input:focus {
+            border-color: #22d3ee;
+            box-shadow: 0 0 8px rgba(34, 211, 238, 0.3);
+        }
+        .terminal-submit {
+            background: #4ade80;
+            color: #0f0f23;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 16px;
+            font-family: 'Courier New', Consolas, monospace;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .terminal-submit:hover {
+            background: #22d3ee;
+        }
+        .terminal-submit:disabled {
+            background: #374151;
+            color: #6b7280;
+            cursor: not-allowed;
+        }
+        .input-area {
+            padding: 12px 20px 16px;
+            background: #16213e;
+            border-top: 1px solid #333;
+        }
+        /* Blinking cursor */
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        .cursor-blink::after {
+            content: '\2588';
+            animation: blink 1s infinite;
+            color: #4ade80;
+        }
+        /* Mobile nav */
+        .mobile-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 0 0 16px 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 16px;
+            z-index: 100;
+        }
+        .mobile-menu.active {
+            display: block;
+        }
+        .mobile-menu a {
+            display: block;
+            padding: 10px 16px;
+            border-radius: 12px;
+            color: #374151;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .mobile-menu a:hover,
+        .mobile-menu a.active {
+            background: #f0fdf4;
+            color: #166534;
+        }
+    </style>
+</head>
+<body class="bg-light text-gray-800">
+    <!-- Navigation -->
+    <nav class="fixed top-4 left-0 right-0 z-50">
+        <div class="container mx-auto px-6">
+            <div class="bg-white rounded-2xl px-6 py-3 shadow-xl shadow-gray-200/50">
+                <div class="flex justify-between items-center">
+                    <a href="index.html" class="text-xl font-semibold text-gray-800">严秀琼</a>
+                    <div class="hidden lg:flex items-center space-x-1">
+                        <a href="index.html#about" class="px-3 py-2 rounded-full text-gray-700 font-light hover:bg-green-100 hover:text-green-900 transition-all duration-300 text-sm">关于我</a>
+                        <a href="index.html#skills" class="px-3 py-2 rounded-full text-gray-700 font-light hover:bg-green-100 hover:text-green-900 transition-all duration-300 text-sm">技能</a>
+                        <a href="index.html#interests" class="px-3 py-2 rounded-full text-gray-700 font-light hover:bg-green-100 hover:text-green-900 transition-all duration-300 text-sm">兴趣</a>
+                        <a href="music.html" class="px-3 py-2 rounded-full text-gray-700 font-light hover:bg-green-100 hover:text-green-900 transition-all duration-300 text-sm">音乐</a>
+                        <a href="bakery.html" class="px-3 py-2 rounded-full text-gray-700 font-light hover:bg-green-100 hover:text-green-900 transition-all duration-300 text-sm">甜品烘焙</a>
+                        <a href="cooking.html" class="px-3 py-2 rounded-full text-gray-700 font-light hover:bg-green-100 hover:text-green-900 transition-all duration-300 text-sm">西式烹饪</a>
+                        <a href="hometown.html" class="px-3 py-2 rounded-full text-gray-700 font-light hover:bg-green-100 hover:text-green-900 transition-all duration-300 text-sm">我的家乡</a>
+                        <a href="python-course.html" class="px-3 py-2 rounded-full text-gray-700 font-light hover:bg-green-100 hover:text-green-900 transition-all duration-300 text-sm">Python课程</a>
+                        <a href="python-challenge.html" class="px-3 py-2 rounded-full bg-green-100 text-green-900 font-medium transition-all duration-300 text-sm">Python闯关</a>
+                        <a href="index.html#contact" class="px-3 py-2 rounded-full text-gray-700 font-light hover:bg-green-100 hover:text-green-900 transition-all duration-300 text-sm">联系我</a>
+                    </div>
+                    <button id="mobile-menu-btn" class="lg:hidden text-gray-800">
+                        <i class="fa fa-bars text-xl"></i>
+                    </button>
+                </div>
+                <!-- Mobile Menu -->
+                <div id="mobile-menu" class="mobile-menu">
+                    <a href="index.html#about">关于我</a>
+                    <a href="index.html#skills">技能</a>
+                    <a href="index.html#interests">兴趣</a>
+                    <a href="music.html">音乐</a>
+                    <a href="bakery.html">甜品烘焙</a>
+                    <a href="cooking.html">西式烹饪</a>
+                    <a href="hometown.html">我的家乡</a>
+                    <a href="python-course.html">Python课程</a>
+                    <a href="python-challenge.html" class="active">Python闯关</a>
+                    <a href="index.html#contact">联系我</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="min-h-[60vh] flex items-center justify-center pt-36 pb-12 gradient-bg">
+        <div class="container mx-auto px-6 text-center">
+            <div class="mb-6">
+                <span class="inline-block bg-primary/10 text-primary px-4 py-1.5 rounded-full text-sm font-medium mb-4">
+                    <i class="fa fa-gamepad mr-2"></i>互动游戏
+                </span>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-light mb-4 text-gray-800">Python知识闯关</h1>
+            <p class="text-lg md:text-xl text-muted mb-6">测试你的Python功底</p>
+            <p class="text-muted max-w-2xl mx-auto leading-relaxed">
+                通过45道精心设计的Python题目，从基础语法到进阶技巧，挑战你的编程知识极限。
+                在浏览器中直接体验终端风格的闯关游戏！
+            </p>
+            <div class="flex justify-center space-x-4 mt-8">
+                <a href="#game" class="bg-primary text-white font-medium px-8 py-3 rounded-full hover:bg-secondary transition-all-300 soft-shadow">
+                    <i class="fa fa-play mr-2"></i>开始闯关
+                </a>
+                <a href="#download" class="border-2 border-gray-300 text-gray-600 px-8 py-3 rounded-full hover:border-primary hover:text-primary transition-all-300">
+                    <i class="fa fa-download mr-2"></i>下载游戏
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Game Rules Section -->
+    <section class="py-20">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-light mb-16 text-center text-gray-800">游戏规则</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <div class="bg-white p-8 rounded-2xl card-hover soft-shadow text-center">
+                    <div class="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
+                        <i class="fa fa-heart text-2xl text-red-500"></i>
+                    </div>
+                    <h3 class="text-lg font-medium mb-3 text-gray-800">3点生命值</h3>
+                    <p class="text-muted text-sm leading-relaxed">
+                        每位玩家拥有3点生命值（HP），答错一题扣除1点生命值。生命值归零则游戏结束，珍惜每一次答题机会！
+                    </p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl card-hover soft-shadow text-center">
+                    <div class="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
+                        <i class="fa fa-star text-2xl text-green-500"></i>
+                    </div>
+                    <h3 class="text-lg font-medium mb-3 text-gray-800">答对 +10 分</h3>
+                    <p class="text-muted text-sm leading-relaxed">
+                        每答对一题获得10分积分。挑战更高关卡，积累更多分数，冲击排行榜榜首！
+                    </p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl card-hover soft-shadow text-center">
+                    <div class="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
+                        <i class="fa fa-line-chart text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="text-lg font-medium mb-3 text-gray-800">难度递增</h3>
+                    <p class="text-muted text-sm leading-relaxed">
+                        关卡1-5为简单题，6-10为中等题，11关起为困难题。难度逐步提升，考验你的全面能力！
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Game Terminal Section -->
+    <section id="game" class="py-20 gradient-bg">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-light mb-4 text-center text-gray-800">在线闯关</h2>
+            <p class="text-center text-muted mb-12">在下方终端中体验Python知识闯关游戏</p>
+            <div class="max-w-3xl mx-auto">
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-dot" style="background:#ff5f56;"></div>
+                        <div class="terminal-dot" style="background:#ffbd2e;"></div>
+                        <div class="terminal-dot" style="background:#27c93f;"></div>
+                        <span class="text-gray-400 text-sm ml-3 font-mono">python-challenge.py</span>
+                        <button id="clear-terminal-btn" class="ml-auto text-gray-500 hover:text-gray-300 transition-all text-sm" title="清空终端">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                    <div id="terminal-output" class="terminal-body">
+                        <div class="terminal-line white">Python 3.12.0 | 闯关游戏引擎 v1.0</div>
+                        <div class="terminal-line dim">输入 "help" 查看帮助 | 按 Enter 开始游戏</div>
+                        <div class="terminal-line green cursor-blink" id="terminal-cursor"></div>
+                    </div>
+                    <div id="input-area" class="input-area" style="display:none;">
+                        <div class="terminal-input-row">
+                            <span class="text-green-400 font-mono text-sm">&gt;&gt;&gt;</span>
+                            <input type="text" id="terminal-input" class="terminal-input" placeholder="在此输入..." autocomplete="off" />
+                            <button id="terminal-submit" class="terminal-submit">提交</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download Section -->
+    <section id="download" class="py-20">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-light mb-4 text-center text-gray-800">下载游戏</h2>
+            <p class="text-center text-muted mb-12">下载Python源码文件，在本地终端运行</p>
+            <div class="max-w-md mx-auto bg-white p-10 rounded-2xl soft-shadow text-center">
+                <div class="bg-primary/10 w-20 h-20 rounded-full flex items-center justify-center mb-6 mx-auto">
+                    <i class="fa fa-file-code text-3xl text-primary"></i>
+                </div>
+                <h3 class="text-xl font-medium mb-3 text-gray-800">python_challenge.py</h3>
+                <p class="text-muted text-sm mb-6 leading-relaxed">
+                    纯原生Python实现的闯关游戏，仅依赖标准库。包含45道题目，涵盖变量、运算符、字符串、列表、循环、字典等核心知识点。
+                </p>
+                <div class="bg-gray-50 rounded-lg p-4 mb-6 text-left">
+                    <p class="text-sm text-muted font-mono">
+                        <span class="text-green-600">$</span> python python_challenge.py
+                    </p>
+                </div>
+                <a href="python_challenge.py" download class="inline-block bg-primary text-white font-medium px-8 py-3 rounded-full hover:bg-secondary transition-all-300 soft-shadow">
+                    <i class="fa fa-download mr-2"></i>下载源文件
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-100 py-10">
+        <div class="container mx-auto px-6 text-center">
+            <div class="flex justify-center space-x-8 mb-6">
+                <a href="#" class="text-muted hover:text-primary transition-all-300">
+                    <i class="fa fa-weixin text-2xl"></i>
+                </a>
+                <a href="#" class="text-muted hover:text-primary transition-all-300">
+                    <i class="fa fa-weibo text-2xl"></i>
+                </a>
+                <a href="#" class="text-muted hover:text-primary transition-all-300">
+                    <i class="fa fa-github text-2xl"></i>
+                </a>
+            </div>
+            <p class="text-muted text-sm">&copy; 2026 严秀琼. 保留所有权利.</p>
+        </div>
+    </footer>
+
+    <script>
+    // ==================== Question Bank ====================
+    const EASY_QUESTIONS = [
+        {
+            question: "以下代码的输出结果是什么？\nx = 10\nprint(x)",
+            options: ["A) 10", "B) x", "C) '10'", "D) 报错"],
+            answer: "A",
+            hint: "x 被赋值为整数 10，print(x) 会输出变量的值 10。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nprint(type(3.14))",
+            options: ["A) <class 'int'>", "B) <class 'float'>", "C) <class 'str'>", "D) <class 'bool'>"],
+            answer: "B",
+            hint: "3.14 是浮点数，对应 float 类型。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nprint(2 + 3 * 4)",
+            options: ["A) 20", "B) 14", "C) 24", "D) 9"],
+            answer: "B",
+            hint: "Python 遵循数学运算优先级，先乘除后加减：3*4=12，2+12=14。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nprint(10 // 3)",
+            options: ["A) 3.33", "B) 3", "C) 4", "D) 1"],
+            answer: "B",
+            hint: "// 是整除运算符，10 // 3 = 3，只保留整数部分，向下取整。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nprint(10 % 3)",
+            options: ["A) 3", "B) 1", "C) 0", "D) 3.33"],
+            answer: "B",
+            hint: "% 是取余运算符，10 除以 3 商 3 余 1，所以结果是 1。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nprint(type('hello'))",
+            options: ["A) <class 'int'>", "B) <class 'list'>", "C) <class 'str'>", "D) <class 'float'>"],
+            answer: "C",
+            hint: "用单引号或双引号括起来的内容是字符串（str）类型。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nprint(type(True))",
+            options: ["A) <class 'int'>", "B) <class 'str'>", "C) <class 'true'>", "D) <class 'bool'>"],
+            answer: "D",
+            hint: "True 是布尔值，对应 bool 类型。注意首字母大写。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\na = 5\nb = a\nprint(b)",
+            options: ["A) a", "B) 5", "C) 'b'", "D) 报错"],
+            answer: "B",
+            hint: "b = a 将 a 的值 5 赋给 b，所以 print(b) 输出 5。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nprint(2 ** 3)",
+            options: ["A) 6", "B) 5", "C) 8", "D) 9"],
+            answer: "C",
+            hint: "** 是幂运算符，2 ** 3 表示 2 的 3 次方，即 2*2*2=8。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nprint('Py' + 'thon')",
+            options: ["A) Py thon", "B) Python", "C) Py+thon", "D) 报错"],
+            answer: "B",
+            hint: "+ 运算符可以拼接字符串，'Py' + 'thon' 结果为 'Python'。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nprint(3 * 'ha')",
+            options: ["A) 3ha", "B) hahaha", "C) ha3", "D) 报错"],
+            answer: "B",
+            hint: "字符串乘以整数 n 会将字符串重复 n 次，3 * 'ha' = 'hahaha'。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nprint(type(42))",
+            options: ["A) <class 'int'>", "B) <class 'float'>", "C) <class 'str'>", "D) <class 'number'>"],
+            answer: "A",
+            hint: "42 是整数，对应 int（integer）类型。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nname = 'Alice'\nprint(name[0])",
+            options: ["A) A", "B) l", "C) Alice", "D) 报错"],
+            answer: "A",
+            hint: "字符串可以通过索引访问单个字符，索引从 0 开始，name[0] 是 'A'。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nprint(len('Python'))",
+            options: ["A) 5", "B) 6", "C) 7", "D) 4"],
+            answer: "B",
+            hint: "len() 函数返回字符串的长度，'Python' 有 6 个字符。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nprint(int('123') + 1)",
+            options: ["A) 1231", "B) 124", "C) '124'", "D) 报错"],
+            answer: "B",
+            hint: "int('123') 将字符串 '123' 转为整数 123，再加 1 等于 124。"
+        }
+    ];
+
+    const MEDIUM_QUESTIONS = [
+        {
+            question: "以下代码的输出结果是什么？\nfor i in range(3):\n    print(i, end=' ')",
+            options: ["A) 0 1 2 ", "B) 1 2 3 ", "C) 0 1 2 3 ", "D) 1 2 "],
+            answer: "A",
+            hint: "range(3) 生成 0, 1, 2 三个数（不包含 3），end=' ' 使输出以空格分隔。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nprint('Python'[1:4])",
+            options: ["A) Pyth", "B) yth", "C) ytho", "D) Pyt"],
+            answer: "B",
+            hint: "切片 [1:4] 取索引 1 到 3 的字符（不包含 4），即 'y', 't', 'h'。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nfruits = ['apple', 'banana', 'cherry']\nprint(fruits[1])",
+            options: ["A) apple", "B) banana", "C) cherry", "D) 报错"],
+            answer: "B",
+            hint: "列表索引从 0 开始，fruits[0]='apple'，fruits[1]='banana'。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nnums = [1, 2, 3]\nnums.append(4)\nprint(len(nums))",
+            options: ["A) 3", "B) 4", "C) 5", "D) 报错"],
+            answer: "B",
+            hint: "append() 在列表末尾添加一个元素，添加后列表变为 [1,2,3,4]，长度为 4。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nx = 15\nif x > 10:\n    print('big')\nelse:\n    print('small')",
+            options: ["A) big", "B) small", "C) big small", "D) 报错"],
+            answer: "A",
+            hint: "15 > 10 为 True，执行 if 分支，输出 'big'。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nprint(list(range(1, 5)))",
+            options: ["A) [1, 2, 3, 4, 5]", "B) [1, 2, 3, 4]", "C) [0, 1, 2, 3, 4]", "D) [0, 1, 2, 3]"],
+            answer: "B",
+            hint: "range(1, 5) 生成从 1 到 4 的整数序列（不包含 5）。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nprint('hello'[::-1])",
+            options: ["A) hello", "B) olleh", "C) h", "D) o"],
+            answer: "B",
+            hint: "[::-1] 是字符串反转的常用写法，步长为 -1 表示从后往前取。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nnums = [3, 1, 2]\nnums.sort()\nprint(nums)",
+            options: ["A) [3, 1, 2]", "B) [1, 2, 3]", "C) [2, 1, 3]", "D) [3, 2, 1]"],
+            answer: "B",
+            hint: "sort() 方法对列表进行原地升序排序，结果为 [1, 2, 3]。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nfor i in range(0, 10, 3):\n    print(i, end=' ')",
+            options: ["A) 0 3 6 9 ", "B) 0 3 6 ", "C) 3 6 9 ", "D) 0 1 2 3 "],
+            answer: "A",
+            hint: "range(0, 10, 3) 从 0 开始，步长为 3，生成 0, 3, 6, 9（9 < 10）。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\na = [1, 2, 3]\nprint(a + [4, 5])",
+            options: ["A) [1, 2, 3, 4, 5]", "B) [5, 4, 3, 2, 1]", "C) [10]", "D) 报错"],
+            answer: "A",
+            hint: "+ 运算符可以将两个列表拼接成一个新列表。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nx = 7\nif x % 2 == 0:\n    print('偶数')\nelif x % 3 == 1:\n    print('余1')\nelse:\n    print('其他')",
+            options: ["A) 偶数", "B) 余1", "C) 其他", "D) 偶数 余1"],
+            answer: "B",
+            hint: "7 % 2 = 1 不等于 0，跳过 if；7 % 3 = 1 等于 1，匹配 elif，输出 '余1'。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nprint('abc' * 2 + 'd')",
+            options: ["A) abcabcd", "B) abcdabcd", "C) abcabc d", "D) abc2d"],
+            answer: "A",
+            hint: "'abc' * 2 = 'abcabc'，再拼接 'd'，结果为 'abcabcd'。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nnums = [10, 20, 30, 40]\nprint(nums[1:3])",
+            options: ["A) [10, 20]", "B) [20, 30]", "C) [20, 30, 40]", "D) [10, 20, 30]"],
+            answer: "B",
+            hint: "列表切片 [1:3] 取索引 1 和 2 的元素，即 [20, 30]。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\ns = 'Hello World'\nprint(s.split())",
+            options: ["A) ['Hello', 'World']", "B) ['HelloWorld']", "C) 'Hello World'", "D) ['H', 'e', 'l', 'l', 'o']"],
+            answer: "A",
+            hint: "split() 默认按空格分割字符串，返回列表 ['Hello', 'World']。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nfor i in range(5):\n    if i == 3:\n        break\n    print(i, end=' ')",
+            options: ["A) 0 1 2 ", "B) 0 1 2 3 ", "C) 0 1 2 3 4 ", "D) 3 "],
+            answer: "A",
+            hint: "break 在 i==3 时跳出循环，所以只输出 0, 1, 2。"
+        }
+    ];
+
+    const HARD_QUESTIONS = [
+        {
+            question: "以下代码的输出结果是什么？\nprint([x**2 for x in range(5)])",
+            options: ["A) [0, 1, 4, 9, 16]", "B) [1, 4, 9, 16, 25]", "C) [0, 1, 2, 3, 4]", "D) [1, 2, 3, 4, 5]"],
+            answer: "A",
+            hint: "列表推导式对 range(5) 即 0,1,2,3,4 中的每个 x 计算 x**2，结果为 [0,1,4,9,16]。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nd = {'a': 1, 'b': 2, 'c': 3}\nprint(d['b'])",
+            options: ["A) 1", "B) 2", "C) 3", "D) 'b'"],
+            answer: "B",
+            hint: "通过键访问字典值，d['b'] 返回键 'b' 对应的值 2。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nresult = 0\ni = 1\nwhile i <= 4:\n    result += i\n    i += 1\nprint(result)",
+            options: ["A) 6", "B) 10", "C) 4", "D) 15"],
+            answer: "B",
+            hint: "while 循环累加：1+2+3+4=10。i 从 1 增加到 5 时条件不满足，退出循环。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nfor i in range(3):\n    for j in range(2):\n        print('*', end='')\n    print()",
+            options: ["A) **\\n**\\n**\\n", "B) ***\\n***\\n", "C) **\\n**\\n", "D) *\\n*\\n*\\n"],
+            answer: "A",
+            hint: "外层循环 3 次，每次内层循环打印 2 个 '*'，然后 print() 换行。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nd = {'x': 1, 'y': 2}\nd['z'] = 3\nprint(len(d))",
+            options: ["A) 2", "B) 3", "C) 4", "D) 报错"],
+            answer: "B",
+            hint: "d['z'] = 3 向字典添加新键值对，字典变为 {'x':1,'y':2,'z':3}，长度为 3。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nprint([i for i in range(10) if i % 3 == 0])",
+            options: ["A) [0, 3, 6, 9]", "B) [3, 6, 9]", "C) [0, 3, 6]", "D) [1, 2, 3]"],
+            answer: "A",
+            hint: "带条件的列表推导式，筛选 range(10) 中能被 3 整除的数：0, 3, 6, 9。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nnums = [1, 2, 3, 4, 5]\nprint(nums[-2])",
+            options: ["A) 2", "B) 3", "C) 4", "D) 5"],
+            answer: "C",
+            hint: "负索引从末尾开始计数，-1 是最后一个元素(5)，-2 是倒数第二个(4)。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nprint(list('abc'))",
+            options: ["A) 'abc'", "B) ['a', 'b', 'c']", "C) ['abc']", "D) (a, b, c)"],
+            answer: "B",
+            hint: "list() 将字符串转换为字符列表，每个字符成为列表的一个元素。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nd = {'a': 1, 'b': 2}\nprint(list(d.keys()))",
+            options: ["A) [1, 2]", "B) ['a', 'b']", "C) ['a:1', 'b:2']", "D) [('a', 1), ('b', 2)]"],
+            answer: "B",
+            hint: "d.keys() 返回字典所有键的视图对象，转为列表后为 ['a', 'b']。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nnums = [1, 2, 3, 2, 1]\nprint(nums.count(2))",
+            options: ["A) 1", "B) 2", "C) 3", "D) 5"],
+            answer: "B",
+            hint: "count() 方法返回元素在列表中出现的次数，2 出现了 2 次。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nx = 0\nwhile x < 5:\n    x += 1\n    if x == 3:\n        continue\n    print(x, end=' ')",
+            options: ["A) 1 2 3 4 5 ", "B) 1 2 4 5 ", "C) 0 1 2 4 5 ", "D) 1 2 3 4 "],
+            answer: "B",
+            hint: "continue 跳过当前迭代的剩余代码。当 x==3 时跳过 print，所以不输出 3。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nprint({x: x*2 for x in range(3)})",
+            options: ["A) {0: 0, 1: 2, 2: 4}", "B) {1: 2, 2: 4, 3: 6}", "C) {0: 2, 1: 4, 2: 6}", "D) 报错"],
+            answer: "A",
+            hint: "字典推导式：range(3) 生成 0,1,2，键为 x，值为 x*2。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nnums = [3, 1, 4, 1, 5]\nprint(sorted(set(nums)))",
+            options: ["A) [3, 1, 4, 1, 5]", "B) [1, 1, 3, 4, 5]", "C) [1, 3, 4, 5]", "D) [5, 4, 3, 1]"],
+            answer: "C",
+            hint: "set(nums) 去重得到 {1,3,4,5}，sorted() 排序后为 [1,3,4,5]。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nfor i in range(1, 4):\n    print(str(i) * i)",
+            options: ["A) 1\\n22\\n333", "B) 1\\n2\\n3", "C) 11\\n222\\n3333", "D) 1\\n22\\n333\\n"],
+            answer: "A",
+            hint: "str(i)*i 将数字转为字符串后重复 i 次：'1'*1='1', '2'*2='22', '3'*3='333'。"
+        },
+        {
+            question: "以下代码的输出结果是什么？\nd = {'a': 1, 'b': 2, 'c': 3}\ndel d['b']\nprint(len(d))",
+            options: ["A) 1", "B) 2", "C) 3", "D) 报错"],
+            answer: "B",
+            hint: "del d['b'] 删除键为 'b' 的键值对，字典变为 {'a':1,'c':3}，长度为 2。"
+        }
+    ];
+
+    // ==================== Game Engine ====================
+    const terminalOutput = document.getElementById('terminal-output');
+    const terminalInput = document.getElementById('terminal-input');
+    const terminalSubmit = document.getElementById('terminal-submit');
+    const inputArea = document.getElementById('input-area');
+    const cursorEl = document.getElementById('terminal-cursor');
+
+    let gameState = 'idle'; // idle, menu, nickname, playing, gameover
+    let nickname = '';
+    let level = 1;
+    let hp = 3;
+    let score = 0;
+    let inputCallback = null;
+    let usedQuestions = new Set();
+
+    // Remove cursor
+    function removeCursor() {
+        if (cursorEl) cursorEl.remove();
+    }
+
+    // Add a line to terminal
+    function addLine(text, colorClass) {
+        removeCursor();
+        const line = document.createElement('div');
+        line.className = 'terminal-line ' + (colorClass || 'green');
+        line.textContent = text;
+        terminalOutput.appendChild(line);
+        scrollToBottom();
+    }
+
+    // Add multiple lines
+    function addLines(lines, colorClass) {
+        lines.forEach(function(line) {
+            addLine(line, colorClass);
+        });
+    }
+
+    // Scroll terminal to bottom
+    function scrollToBottom() {
+        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+    }
+
+    // Show input area
+    function showInput(placeholder, callback) {
+        inputArea.style.display = 'block';
+        terminalInput.value = '';
+        terminalInput.placeholder = placeholder || '在此输入...';
+        terminalInput.disabled = false;
+        terminalSubmit.disabled = false;
+        inputCallback = callback;
+        terminalInput.focus();
+    }
+
+    // Hide input area
+    function hideInput() {
+        inputArea.style.display = 'none';
+        terminalInput.value = '';
+        inputCallback = null;
+    }
+
+    // Handle input submission
+    function submitInput() {
+        const value = terminalInput.value.trim();
+        if (!value) return;
+
+        // Echo the input
+        addLine('>>> ' + value, 'cyan');
+        terminalInput.value = '';
+
+        if (inputCallback) {
+            const cb = inputCallback;
+            inputCallback = null;
+            cb(value);
+        }
+    }
+
+    terminalSubmit.addEventListener('click', submitInput);
+    terminalInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            submitInput();
+        }
+    });
+
+    // Clear terminal
+    document.getElementById('clear-terminal-btn').addEventListener('click', function() {
+        terminalOutput.innerHTML = '';
+        addLine('Python 3.12.0 | 闯关游戏引擎 v1.0', 'white');
+        addLine('输入 "help" 查看帮助 | 按 Enter 开始游戏', 'dim');
+        gameState = 'idle';
+        hideInput();
+        showMainMenu();
+    });
+
+    // ==================== Game Functions ====================
+
+    function showBanner() {
+        addLine('');
+        addLine('╔══════════════════════════════════════╗', 'white');
+        addLine('║     Python 知识闯关挑战赛            ║', 'white');
+        addLine('║     测试你的 Python 功底！           ║', 'white');
+        addLine('╚══════════════════════════════════════╝', 'white');
+        addLine('');
+    }
+
+    function showMenu() {
+        addLine('========== Python 知识闯关 ==========', 'yellow');
+        addLine('  1. 开始游戏', 'green');
+        addLine('  2. 查看排行榜', 'green');
+        addLine('  0. 退出游戏', 'green');
+        addLine('======================================', 'yellow');
+    }
+
+    function showStatus() {
+        var hearts = '';
+        for (var i = 0; i < hp; i++) hearts += '\u2665';
+        for (var i = hp; i < 3; i++) hearts += '\u2661';
+        addLine('');
+        addLine('[ 关卡 ' + level + ' ]  生命值: ' + hearts + '  积分: ' + score, 'white');
+        addLine('------------------------------------', 'dim');
+    }
+
+    function generateQuestion() {
+        var pool;
+        if (level <= 5) {
+            pool = EASY_QUESTIONS;
+        } else if (level <= 10) {
+            pool = MEDIUM_QUESTIONS.concat(MEDIUM_QUESTIONS).concat(MEDIUM_QUESTIONS).concat(EASY_QUESTIONS).concat(EASY_QUESTIONS);
+        } else {
+            pool = HARD_QUESTIONS.concat(HARD_QUESTIONS).concat(HARD_QUESTIONS).concat(MEDIUM_QUESTIONS).concat(MEDIUM_QUESTIONS);
+        }
+
+        // Try to find a question not recently used
+        var attempts = 0;
+        var idx;
+        do {
+            idx = Math.floor(Math.random() * pool.length);
+            attempts++;
+        } while (usedQuestions.has(idx) && attempts < 20);
+
+        usedQuestions.add(idx);
+        if (usedQuestions.size > 30) {
+            usedQuestions.clear();
+            usedQuestions.add(idx);
+        }
+
+        return pool[idx];
+    }
+
+    function loadLeaderboard() {
+        try {
+            var data = localStorage.getItem('python_challenge_leaderboard');
+            return data ? JSON.parse(data) : [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function saveToLeaderboard(nick, lvl, sc) {
+        var leaderboard = loadLeaderboard();
+        leaderboard.push({ nickname: nick, level: lvl, score: sc });
+        leaderboard.sort(function(a, b) {
+            if (b.score !== a.score) return b.score - a.score;
+            return b.level - a.level;
+        });
+        leaderboard = leaderboard.slice(0, 20);
+        localStorage.setItem('python_challenge_leaderboard', JSON.stringify(leaderboard));
+    }
+
+    function showLeaderboard() {
+        var leaderboard = loadLeaderboard();
+        addLine('');
+        addLine('========== 排行榜 TOP 5 ==========', 'yellow');
+        if (leaderboard.length === 0) {
+            addLine('  暂无记录，快来挑战吧！', 'dim');
+        } else {
+            addLine('  排名    昵称          关卡    积分', 'white');
+            addLine('  ----------------------------------', 'dim');
+            for (var i = 0; i < Math.min(5, leaderboard.length); i++) {
+                var r = leaderboard[i];
+                var rank = (i + 1).toString();
+                var nick = r.nickname;
+                var lvl = r.level.toString();
+                var sc = r.score.toString();
+                // Pad each field
+                while (rank.length < 6) rank += ' ';
+                while (nick.length < 12) nick += ' ';
+                while (lvl.length < 6) lvl += ' ';
+                while (sc.length < 6) sc += ' ';
+                addLine('  ' + rank + nick + lvl + sc, 'green');
+            }
+        }
+        addLine('==================================', 'yellow');
+    }
+
+    function showGameOver() {
+        addLine('');
+        addLine('╔══════════════════════════════════════╗', 'red');
+        addLine('║           游戏结束！                ║', 'red');
+        addLine('╚══════════════════════════════════════╝', 'red');
+        addLine('  玩家: ' + nickname, 'white');
+        addLine('  到达关卡: ' + (level - 1), 'white');
+        addLine('  总积分: ' + score, 'white');
+        addLine('');
+        saveToLeaderboard(nickname, level - 1, score);
+        addLine('  你的成绩已记录到排行榜！', 'cyan');
+        addLine('');
+    }
+
+    function askQuestion() {
+        if (hp <= 0) {
+            showGameOver();
+            gameState = 'menu';
+            setTimeout(function() {
+                showMenu();
+                showInput('请选择 (0/1/2)', handleMenuChoice);
+            }, 500);
+            return;
+        }
+
+        showStatus();
+        var question = generateQuestion();
+
+        addLine(question.question, 'white');
+        addLine('');
+        for (var i = 0; i < question.options.length; i++) {
+            addLine('  ' + question.options[i], 'green');
+        }
+        addLine('');
+
+        showInput('请输入你的答案 (A/B/C/D)', function(answer) {
+            answer = answer.toUpperCase();
+            if (answer !== 'A' && answer !== 'B' && answer !== 'C' && answer !== 'D') {
+                addLine('无效输入，请输入 A、B、C 或 D。', 'yellow');
+                showInput('请输入你的答案 (A/B/C/D)', arguments.callee);
+                return;
+            }
+
+            if (answer === question.answer) {
+                score += 10;
+                addLine('');
+                addLine('  回答正确！ +10 分', 'cyan');
+            } else {
+                hp -= 1;
+                addLine('');
+                addLine('  回答错误！正确答案是 ' + question.answer + '。', 'red');
+                addLine('  提示：' + question.hint, 'yellow');
+                if (hp > 0) {
+                    addLine('  剩余生命值: ' + hp, 'yellow');
+                }
+            }
+
+            level += 1;
+
+            // Small delay before next question
+            setTimeout(function() {
+                askQuestion();
+            }, 300);
+        });
+    }
+
+    function handleMenuChoice(choice) {
+        if (choice === '1') {
+            gameState = 'nickname';
+            addLine('');
+            showInput('请输入你的昵称', function(nick) {
+                if (!nick) {
+                    addLine('昵称不能为空，请重新输入。', 'yellow');
+                    showInput('请输入你的昵称', arguments.callee);
+                    return;
+                }
+                nickname = nick;
+                level = 1;
+                hp = 3;
+                score = 0;
+                usedQuestions.clear();
+                addLine('');
+                addLine('欢迎你，' + nickname + '！游戏开始！', 'cyan');
+                addLine('初始生命值: 3，答对 +10 分，答错 -1 生命值。', 'dim');
+                gameState = 'playing';
+                setTimeout(function() {
+                    askQuestion();
+                }, 500);
+            });
+        } else if (choice === '2') {
+            showLeaderboard();
+            addLine('');
+            showMenu();
+            showInput('请选择 (0/1/2)', handleMenuChoice);
+        } else if (choice === '0') {
+            addLine('');
+            addLine('感谢游玩，再见！', 'cyan');
+            addLine('');
+            gameState = 'idle';
+            hideInput();
+        } else {
+            addLine('');
+            addLine('无效选择，请重新输入。', 'yellow');
+            addLine('');
+            showMenu();
+            showInput('请选择 (0/1/2)', handleMenuChoice);
+        }
+    }
+
+    function showMainMenu() {
+        showBanner();
+        showMenu();
+        gameState = 'menu';
+        showInput('请选择 (0/1/2)', handleMenuChoice);
+    }
+
+    // ==================== Initialize ====================
+    // Auto-start the game on page load
+    setTimeout(function() {
+        showMainMenu();
+    }, 800);
+
+    // ==================== Mobile Menu ====================
+    document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+        var menu = document.getElementById('mobile-menu');
+        menu.classList.toggle('active');
+    });
+
+    // Close mobile menu when clicking a link
+    document.querySelectorAll('#mobile-menu a').forEach(function(link) {
+        link.addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.remove('active');
+        });
+    });
+    </script>
+</body>
+</html>
